@@ -62,10 +62,6 @@ function updateDisplayNoAnimate() {
  * Clear the current screen of option cards, and add all the new ones.
  */
 function updateDisplay(noAnimate) {
-    var player = g.player,
-        inventory = g.inventory,
-        location = g.player.location;
-
     if (!noAnimate) {
         $("#main-content").fadeOut(500, function () {
             updateDisplayNoAnimate();
