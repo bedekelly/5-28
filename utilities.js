@@ -68,3 +68,27 @@ function updateDisplay(noAnimate) {
         updateDisplayNoAnimate();
     }
 }
+
+
+function loadTrading() {
+    "use strict";
+    let location = g.player.location;
+    $("#trading h1").html(`<span onclick="exitTrading();"><</span> 
+                           Trade: ${location.name}`);
+    // Todo: Load in actual traders.
+}
+
+function enterTrading() {
+    $("#main-content").fadeOut(500, () => {
+        loadTrading();
+        $("#trading").fadeIn(500);
+    });
+}
+
+
+function exitTrading() {
+    "use strict";
+    $("#trading").fadeOut(500, () => {
+        $("#main-content").fadeIn(500);
+    });
+}

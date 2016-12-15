@@ -206,10 +206,19 @@ const THE_STRIP = new Location(
 alleyway, half-hidden by a coal-seller's stall.`);
                 g.player.moveLocation(OUTSIDE_APARTMENT);
             }
+        ),
+        new GameOption(
+            "Trade in the market",
+            () => {
+                g.ledger.write(`You start peeling your eyes for a bargain.
+                The markets can yield some rather curious and rare items...
+                for a price, of course.`);
+                enterTrading();
+            }
         )
     ],
     []
 );
 
 
-const DEFAULT_LOCATION = STUDY;
+const DEFAULT_LOCATION = THE_STRIP;

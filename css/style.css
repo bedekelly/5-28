@@ -70,8 +70,71 @@ body, html {
 /* Scrollable wrapper for the ledger items. */
 #ledger-items-wrapper {
     position: absolute;
-    height: 100%;
     width: 105%;
     top: 60px;
     overflow: scroll;
+}
+
+
+#traders-wrapper {
+    z-index: 1;
+    position: absolute;
+    height: 90%;
+    width: 100%;
+    top: 70px;
+    overflow-y: scroll;
+}
+
+
+/* Hide the trading screen by default. */
+#trading {
+    height: 90vh;
+    display:none;
+    position: relative;
+    overflow-y: hidden;
+}
+
+#trading h1 {
+    z-index: 100;
+}
+
+.trader {
+    list-style: none;
+}
+
+.trader h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+
+}
+
+.trader h5 {
+    font-weight: bold;
+    font-size: 14.5pt;
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.trader p {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.trader table {
+    /*margin-top: 1rem;*/
+    margin-bottom: 1rem;
+}
+
+.trader table td:last-child {
+    text-align: right;
+    padding-right: 1rem;
+}
+
+.traders:not(:first-child) h5 {
+    padding-top: 10rem;
+}
+
+#trading h1 span:hover {
+    cursor: default;
+    font-weight: bold;
 }

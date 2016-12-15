@@ -73,8 +73,11 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
 
     g.ledger.write("You move north, off the strip and into the grimy\nalleyway, half-hidden by a coal-seller's stall.");
     g.player.moveLocation(OUTSIDE_APARTMENT);
+}), new GameOption("Trade in the market", function () {
+    g.ledger.write("You start peeling your eyes for a bargain.\n                The markets can yield some rather curious and rare items...\n                for a price, of course.");
+    enterTrading();
 })], []);
 
-var DEFAULT_LOCATION = STUDY;
+var DEFAULT_LOCATION = THE_STRIP;
 
 //# sourceMappingURL=gameData-compiled.js.map
