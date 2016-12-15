@@ -18,6 +18,5 @@ $(document).ready(() => {
     DEFAULT_ITEMS.forEach(i => g.player.addItem(i, true));
 
     /* If it hasn't already updated, update the display now. */
-    console.log("updating display");
     updateDisplay(g.player);
 });

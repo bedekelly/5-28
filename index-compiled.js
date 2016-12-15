@@ -22,7 +22,6 @@ $(document).ready(function () {
     });
 
     /* If it hasn't already updated, update the display now. */
-    console.log("updating display");
     updateDisplay(g.player);
 });
 
