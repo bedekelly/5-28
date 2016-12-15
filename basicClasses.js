@@ -137,8 +137,8 @@ class Player extends QualityContainer {
      * @param noAnimate Stop the item being animated.
      */
     addItem(i, noAnimate) {
-        var stackFound = false;
-        for (var stack of this.itemStacks) {
+        let stackFound = false;
+        for (let stack of this.itemStacks) {
             if (stack.item.name == i.name) {
                 stack.numberItems++;
                 stackFound = true;
@@ -152,7 +152,7 @@ class Player extends QualityContainer {
         }
 
         if (!stackFound) {
-            for (stack of this.itemStacks) {
+            for (let stack of this.itemStacks) {
                 if (stack.item.name == i.name) {
                     g.inventory.add(stack, !noAnimate);
                 }

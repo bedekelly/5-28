@@ -220,10 +220,10 @@ var Player = function (_QualityContainer2) {
 
             try {
                 for (var _iterator2 = this.itemStacks[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var stack = _step2.value;
+                    var _stack = _step2.value;
 
-                    if (stack.item.name == i.name) {
-                        stack.numberItems++;
+                    if (_stack.item.name == i.name) {
+                        _stack.numberItems++;
                         stackFound = true;
                         break;
                     }
@@ -254,7 +254,7 @@ var Player = function (_QualityContainer2) {
 
                 try {
                     for (var _iterator3 = this.itemStacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                        stack = _step3.value;
+                        var stack = _step3.value;
 
                         if (stack.item.name == i.name) {
                             g.inventory.add(stack, !noAnimate);
