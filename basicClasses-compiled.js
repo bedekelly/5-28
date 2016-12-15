@@ -333,11 +333,6 @@ var LedgerInterface = function () {
     }
 
     _createClass(LedgerInterface, [{
-        key: "_findLedger",
-        value: function _findLedger() {
-            return $("#ledger-items");
-        }
-    }, {
         key: "add",
         value: function add(actionTaken, noAnimate) {
             if (!noAnimate) {
@@ -354,6 +349,11 @@ var LedgerInterface = function () {
         value: function write(action) {
             this.add(action);
         }
+    }], [{
+        key: "_findLedger",
+        value: function _findLedger() {
+            return $("#ledger-items");
+        }
     }]);
 
     return LedgerInterface;
@@ -363,15 +363,10 @@ var InventoryInterface = function () {
     function InventoryInterface() {
         _classCallCheck(this, InventoryInterface);
 
-        this.inventory = this._findInventory();
+        this.inventory = InventoryInterface._findInventory();
     }
 
     _createClass(InventoryInterface, [{
-        key: "_findInventory",
-        value: function _findInventory() {
-            return $("#inventory-items");
-        }
-    }, {
         key: "updateAllNoAnimate",
         value: function updateAllNoAnimate() {
             var _this4 = this;
@@ -405,6 +400,11 @@ var InventoryInterface = function () {
             } else {
                 this.inventory.append($("<li class=\"inventory-item\">" + itemStack.toString() + "</li>"));
             }
+        }
+    }], [{
+        key: "_findInventory",
+        value: function _findInventory() {
+            return $("#inventory-items");
         }
     }]);
 

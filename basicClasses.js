@@ -171,7 +171,7 @@ class Player extends QualityContainer {
     addItemStack(stack) {
         let num = stack.numberItems;
         let item = stack.item;
-        for (var i=0; i<num; i++) {
+        for (let i=0; i<num; i++) {
             this.addItem(item);
         }
     }
@@ -202,7 +202,7 @@ class LedgerInterface {
         this.ledger = this._findLedger();
     }
 
-    _findLedger() {
+    static _findLedger() {
         return $("#ledger-items")
     }
 
@@ -225,10 +225,10 @@ class LedgerInterface {
 
 class InventoryInterface {
     constructor() {
-        this.inventory = this._findInventory();
+        this.inventory = InventoryInterface._findInventory();
     }
 
-    _findInventory() {
+    static _findInventory() {
         return $("#inventory-items");
     }
 
