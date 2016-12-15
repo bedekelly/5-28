@@ -64,7 +64,7 @@ body, html {
 
     /* Make the ledger scrollable. */
     position: relative;
-    overflow: hidden;
+    overflow-y: hidden;
 }
 
 /* Scrollable wrapper for the ledger items. */
@@ -72,7 +72,7 @@ body, html {
     position: absolute;
     width: 105%;
     top: 60px;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 
