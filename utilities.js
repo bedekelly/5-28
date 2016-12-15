@@ -50,7 +50,7 @@ function updateDisplayNoAnimate() {
     inventory.updateAll();
 
     /* Update the location information, description and page title. */
-    updateLocation(true);
+    updateLocation();
 }
 
 
