@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta-attributes -->
+    <meta charset="UTF-8">
+    <meta name="description" content="A minimal text game">
+    <meta name="author" content="Bede Kelly">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Styles and fonts -->
+    <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- Scripts and source files -->
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="utilities-compiled.js"></script>
+    <script src="basicClasses-compiled.js"></script>
+    <script src="gameData-compiled.js"></script>
+    <script src="index-compiled.js"></script>
+
+    <!-- Page title (filled in by JS) -->
+    <title></title>
+</head>
+
+<body>
+
+
+<div class="color-wrapper"><!-- Background colour wrapper -->
+    <div class="container"><!-- Skeleton page container -->
+        <div class="row"><!-- Skeleton row -->
+            <div id="ledger" class="three columns"><!-- Ledger container -->
+                <h2>Ledger</h2>
+                <div id="ledger-items-wrapper"><!-- Ledger items wrapper -->
+                    <ul id="ledger-items"></ul>
+                </div><!-- /Ledger items wrapper -->
+            </div><!-- /Ledger container -->
+            <div id="main-content" class="six columns"><!-- Options & Location container -->
+                <div id="location"><!-- Location container -->
+                    <h1 id="location-header"></h1>
+                    <p id="location-description"></p>
+                </div><!-- /Location container -->
+                <div id="options"><!-- Options container -->
+                    <h2>Options</h2>
+                </div><!-- /Options container -->
+            </div><!-- /Options & Location container -->
+            <div id="inventory" class="three columns">
+                <h2>Items</h2>
+                <ul id="inventory-items"></ul>
+            </div><!-- /Inventory -->
+        </div><!-- /Skeleton row -->
+    </div><!-- /Skeleton container -->
+</div><!-- /Background colour wrapper -->
+
+</body>
+</html>

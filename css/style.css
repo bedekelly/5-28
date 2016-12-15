@@ -1,0 +1,78 @@
+/* Add some padding for the buttons. */
+button {
+    margin: 5px;
+    text-align: center;
+}
+
+/* Add a top margin for the page. */
+.row {
+    padding-top: 5vh;
+}
+
+/* Full-screen colour background. */
+.color-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: #feefdb;
+}
+
+body, html {
+    /* Full-screen colour background: */
+    height: 100%;
+    max-height: 100%;
+
+    /* Temporary hack to hide old ledger items */
+    overflow-y: hidden;
+
+    /* See if this angers anyone. */
+    user-select: none;
+}
+
+#ledger-items {
+    /* Get rid of bullet points. */
+    list-style: none;
+
+    /* Reverse the order of our ledger. */
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#ledger-items li {
+    /* Hide the ledger scroll-bar. */
+    padding-right: 10px;
+
+    /* Reverse the order of our ledger. */
+    flex: 0 0 auto;
+
+    /* Add some padding to each item in the ledger. */
+    padding-top: 10px;
+}
+
+/* All but the most recent ledger item should be faint grey. */
+#ledger-items > li:not(:last-child) {
+    color: #dacfbf;
+}
+
+/* The location description should be in a larger font. */
+#location-description {
+    padding-top: 9pt;
+    font-size: 14.5pt;
+}
+
+/* The ledger should be 80% of the screen height. */
+#ledger {
+    height: 80vh;
+
+    /* Make the ledger scrollable. */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Scrollable wrapper for the ledger items. */
+#ledger-items-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 105%;
+    top: 60px;
+    overflow: scroll;
+}
