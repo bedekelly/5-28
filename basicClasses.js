@@ -23,16 +23,16 @@ class QualityContainer {
     }
 
     hasQualityWithName(name) {
-        for (var q of this.qualities) {
-            if (q.name == name) return true
+        for (let quality of this.qualities) {
+            if (quality.name == name) return true
         }
         return false;
     }
 
     removeQualityWithName(name) {
-        var idx, found = false;
-        for (var i=0; i<this.qualities.length; i++) {
-            var quality = this.qualities[i];
+        let idx, found = false;
+        for (let i=0; i<this.qualities.length; i++) {
+            let quality = this.qualities[i];
             if (quality.name == name) {
                 idx = i;
                 found = true;

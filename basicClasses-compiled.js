@@ -41,9 +41,9 @@ var QualityContainer = function () {
 
             try {
                 for (var _iterator = this.qualities[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var q = _step.value;
+                    var quality = _step.value;
 
-                    if (q.name == name) return true;
+                    if (quality.name == name) return true;
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -65,7 +65,7 @@ var QualityContainer = function () {
     }, {
         key: "removeQualityWithName",
         value: function removeQualityWithName(name) {
-            var idx,
+            var idx = void 0,
                 found = false;
             for (var i = 0; i < this.qualities.length; i++) {
                 var quality = this.qualities[i];
