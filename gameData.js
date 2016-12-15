@@ -221,4 +221,4 @@ alleyway, half-hidden by a coal-seller's stall.`);
 );
 
 
-const DEFAULT_LOCATION = THE_STRIP;
+const DEFAULT_LOCATION = STUDY;

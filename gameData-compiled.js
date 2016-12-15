@@ -78,6 +78,6 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
     enterTrading();
 })], []);
 
-var DEFAULT_LOCATION = THE_STRIP;
+var DEFAULT_LOCATION = STUDY;
 
 //# sourceMappingURL=gameData-compiled.js.map
