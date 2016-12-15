@@ -54,8 +54,7 @@ body, html {
 }
 
 /* The location description should be in a larger font. */
-#location-description {
-    padding-top: 9pt;
+#location-description1, #location-description2 {
     font-size: 14.5pt;
 }
 

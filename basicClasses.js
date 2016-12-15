@@ -51,10 +51,11 @@ class QualityContainer {
 
 
 class Location extends QualityContainer{
-    constructor(name, initialDescription, defaultOptions, defaultQualities) {
+    constructor(name, descA, descB, defaultOptions, defaultQualities) {
         super(defaultQualities);
         this.name = name;
-        this.description = initialDescription;
+        this.descA = descA;
+        this.descB = descB;
         this.defaultOptions = defaultOptions;
     }
 }
@@ -89,13 +90,22 @@ class Scheduler {
         this._scheduleMap = new Map();
     }
 
-    every(secs, fn, label) {
+    every(secs, label, fn) {
         let id = setInterval(fn, secs);
         this._scheduleMap.set(label, id);
     };
 
+    after(secs, label, fn) {
+        let id = setTimeout(fn, secs);
+        this._scheduleMap.set(label, id);
+    }
+
     cancel(label) {
-        clearInterval(this._scheduleMap.get(label));
+        let id = this._scheduleMap.get(label);
+        if (id) {
+            clearInterval(id);
+            clearTimeout(id);
+        }
     }
 }
 
@@ -199,7 +209,7 @@ class Player extends QualityContainer {
 
 class LedgerInterface {
     constructor() {
-        this.ledger = this._findLedger();
+        this.ledger = LedgerInterface._findLedger();
     }
 
     static _findLedger() {

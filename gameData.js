@@ -11,10 +11,13 @@ const DEFAULT_ITEMS = [
 ];
 
 
-const BUSY_STREET = new Location(
+const OUTSIDE_APARTMENT = new Location(
     "A Bustling Alleyway",
     `Framed by dirty, squat buildings, this alley is home to some of the worst
     company in all of the East Tunnel.`,
+    `It's not all bad, though: the Solstice markets are opening, and there are
+    always bargains to be had. Potentially, bargains of questionable legality -
+    but what the Invigilators don't know can't hurt them.`,
     [
         new GameOption(
             "Return to your lodgings",
@@ -27,7 +30,7 @@ const BUSY_STREET = new Location(
             }
         ),
         new GameOption(
-            "Walk north up Eastside Street",
+            "Walk north up Eastside",
             () => {
                 "use strict";
                 g.player.moveLocation(OUTSIDE_FACTORY);
@@ -54,6 +57,15 @@ const BUSY_STREET = new Location(
                 );
                 g.player.addQuality(new Quality("tried to fire blunderbuss"));
             }
+        ),
+        new GameOption(
+            "Walk down The Strip",
+            () => {
+                "use strict";
+                g.player.moveLocation(THE_STRIP);
+                g.ledger.write(`You push past the crowds and reach The Strip,
+                the East Tunnel's excuse for a town centre.`)
+            }
         )
     ],  // Options
     []  // Qualities
@@ -64,6 +76,11 @@ const STUDY = new Location(
     `Property in the Tunnels is all about one thing: "Location, Location, 
      Location!" That's why these rooms were so cheap.
      Not that you're complaining, of course.`,
+
+    `A battered armchair sits in the
+     corner, crammed next to to a low dresser. Dimly lit by a gas lamp, the
+     shadows in the room flickers, forming haphazard shapes on the dirty walls.
+    `,
     [
         new GameOption(
             "Relax in your study",
@@ -81,7 +98,7 @@ const STUDY = new Location(
         ),
         new GameOption(
             "Roam the streets", () => {
-                g.player.moveLocation(BUSY_STREET);
+                g.player.moveLocation(OUTSIDE_APARTMENT);
                 g.ledger.add(`You slip through your window and slide down the
 drainpipe to the street outside. Never hurts to make an appearance, eh?`);
             }
@@ -113,20 +130,85 @@ drainpipe to the street outside. Never hurts to make an appearance, eh?`);
 
 const OUTSIDE_FACTORY = new Location(
     "An Imposing Factory",
-    `The factory is responsible for the smog dirtying your window. And much of
-    the production of low-end mining gear, or so you hear.`,
+    `Ahead of you, a dark, rectangular silhouette of the Factory blocks out the 
+    rough tunnel wall. The wrought-iron gates look resolutely locked.`,
+
+    `This particular Factory is responsible for two-thirds of the mining gear
+    used on official Expeditions, or so you hear. It's also responsible for the
+    thick clouds of smog that roll through the open window of your apartment 
+    most mornings.`,
+
     [
         new GameOption(
-            "Walk south down Eastside Street",
+            "Walk south down Eastside",
             () => {
                 "use strict";
-                g.player.moveLocation(BUSY_STREET);
+                g.player.moveLocation(OUTSIDE_APARTMENT);
                 g.ledger.add(`Moving away from the factory, you can see your
                 apartment through the clouds of smog. Street urchins brush past
                 you, darting towards their next target.`)
             }
+        ),
+        new GameOption(
+            "Walk west towards the station",
+            () => {
+                g.player.moveLocation(STATION);
+                g.ledger.add(`You walk briskly west, and a squat, unassuming
+                railway station appears to your right.`)
+            }
         )
     ], []
+);
+
+const STATION = new Location(
+    "An Unassuming Station",
+    `The underground Railway is serviced by dozens of stations just like this
+     one, signposted Eastside. All in the same, grimy condition.`,
+    `Most workers use the Railway for their daily commute, to reach the Outer 
+     Tunnels. It's rumoured that some tunnel-dwellers have their own, hidden 
+     ways of traveling between tunnels - but rumours being what they are, who
+     can tell?`,
+    [
+        new GameOption(
+            "Buy a Single Ticket", () => {
+                g.ledger.write(`You spot an unassuming brass machine for 
+                printing tickets. The only problem: you don't have the 
+                cash for a single ticket, let alone some of the machine's more 
+                extravagant offerings.`)
+            }
+        ),
+        new GameOption(
+            "Walk east to the Factory", () => {
+                "use strict";
+                g.ledger.write(`As you walk away from the station, the factory's
+                silhouette looms out of the smog and mist ahead of you.`);
+                g.player.moveLocation(OUTSIDE_FACTORY);
+            }
+        )
+    ], []
+);
+
+const THE_STRIP = new Location(
+    "The Strip",
+    `The Strip is the gathering-place for all activities commercial and strictly
+    above-board in the East Tunnel. The air is warm from body heat, and from a 
+    nearby stove.`,
+    `Once a wide boulevard intended for automobiles, it's been usurped by a
+    throng of market stalls in various states of disarray. State buildings block
+    the view to the railway - although it's still audible over the noise of the
+    crowd.`,
+    [
+        new GameOption(
+            "Walk up to Eastside",
+            () => {
+                "use strict";
+                g.ledger.write(`You move north, off the strip and into the grimy
+alleyway, half-hidden by a coal-seller's stall.`);
+                g.player.moveLocation(OUTSIDE_APARTMENT);
+            }
+        )
+    ],
+    []
 );
 
 

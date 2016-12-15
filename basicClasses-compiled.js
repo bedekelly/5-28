@@ -92,13 +92,14 @@ var QualityContainer = function () {
 var Location = function (_QualityContainer) {
     _inherits(Location, _QualityContainer);
 
-    function Location(name, initialDescription, defaultOptions, defaultQualities) {
+    function Location(name, descA, descB, defaultOptions, defaultQualities) {
         _classCallCheck(this, Location);
 
         var _this = _possibleConstructorReturn(this, (Location.__proto__ || Object.getPrototypeOf(Location)).call(this, defaultQualities));
 
         _this.name = name;
-        _this.description = initialDescription;
+        _this.descA = descA;
+        _this.descB = descB;
         _this.defaultOptions = defaultOptions;
         return _this;
     }
@@ -146,14 +147,24 @@ var Scheduler = function () {
 
     _createClass(Scheduler, [{
         key: "every",
-        value: function every(secs, fn, label) {
+        value: function every(secs, label, fn) {
             var id = setInterval(fn, secs);
+            this._scheduleMap.set(label, id);
+        }
+    }, {
+        key: "after",
+        value: function after(secs, label, fn) {
+            var id = setTimeout(fn, secs);
             this._scheduleMap.set(label, id);
         }
     }, {
         key: "cancel",
         value: function cancel(label) {
-            clearInterval(this._scheduleMap.get(label));
+            var id = this._scheduleMap.get(label);
+            if (id) {
+                clearInterval(id);
+                clearTimeout(id);
+            }
         }
     }]);
 
@@ -329,7 +340,7 @@ var LedgerInterface = function () {
     function LedgerInterface() {
         _classCallCheck(this, LedgerInterface);
 
-        this.ledger = this._findLedger();
+        this.ledger = LedgerInterface._findLedger();
     }
 
     _createClass(LedgerInterface, [{

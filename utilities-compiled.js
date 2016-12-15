@@ -35,7 +35,8 @@ function updateLocation() {
     var location = g.player.location;
     $("title").text(location.name);
     $("#location-header").text(location.name);
-    $("#location-description").text(location.description);
+    $("#location-description1").text(location.descA);
+    $("#location-description2").text(location.descB);
 }
 
 function updateDisplayNoAnimate() {
