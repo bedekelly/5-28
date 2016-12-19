@@ -78,6 +78,7 @@ body, html {
     overflow-y: scroll !important;
 }
 
+*::-webkit-scrollbar { width: 0 !important }
 
 #traders-wrapper {
     z-index: 1;
