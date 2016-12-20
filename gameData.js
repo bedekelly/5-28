@@ -46,7 +46,7 @@ const HONEST_PETE = new Trader(
     [
         {
             product: `Chamois Leather Cloth`,
-            price: 430,
+            price: 43200,
             quantityLeft: 3,
             multipack: 5
         },
@@ -81,6 +81,30 @@ const HONEST_PETE = new Trader(
             priceMultipack: 5,
         }
     ]
+);
+
+const MR_BAKER = new Trader(
+    "Mr. Baker",
+    "Mr. Baker's Electric Supply Co.",
+    `Is your Wireless on the fritz? Does your Mechanized Mustard-Cutter just not
+     cut the mustard any more? Hurry on down to Mr. Baker's Electric Supply Co.,
+    and we'll whip those newfangled automatons into shape.`,
+
+    // Buy:
+    [
+        {
+            product: `Pieces of Scrap Metal`,
+            price: 400,
+            quantityLeft: 10,
+            multipack: 15
+        }
+    ],
+
+    // Sell:
+    [],
+
+    // Trade:
+    []
 );
 
 
@@ -291,7 +315,7 @@ alleyway, half-hidden by a coal-seller's stall.`);
         )
     ],
     [],
-    [HONEST_PETE]
+    [MR_BAKER, HONEST_PETE]
 );
 
 

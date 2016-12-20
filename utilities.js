@@ -7,7 +7,7 @@
 function numberToString(n) {
 
     function triplets(n){let c='',m=0;
-        if (100<=n) {m=Math.floor(n/100);c+=triplets(m)+' hundred';n-=m*100}
+        if (100<=n) {m=Math.floor(n/100);c+=triplets(m)+' Hundred';n-=m*100}
         n.toString().replace(/^[2-9](?=\d)/,function(a){
             c+=(m?'  and ':' ')+('Twenty,Thirty,Forty,Fifty,Sixty,Seventy,Eighty,Ninety'.split(',')[a-2]);n-=(+a)*10});
         if (n==0) return c;else if (c && n<10) c+='-';
@@ -113,6 +113,12 @@ function priceFromPennies(n) {
     let [pounds, pence] = divmod(n, 100);
     if (pounds && pence) {
         return numberToString(pounds) + " Pounds, " + numberToString(pence) + " Pence";
+    } else if(pounds) {
+        return numberToString(pounds) + " Pounds";
+    } else if (pence) {
+        return numberToString(pence) + " Pence";
+    } else {
+        return "Free of Charge or Obligation"
     }
 
 }
@@ -150,7 +156,6 @@ function priceFromPennies(n) {
 function addTrader(traderInfo) {
     "use strict";
     let traders = $(".traders");
-    traders.html("");
     let trader = $(`<li class="trader"></li>`);
     let name = $(`<h3 class="trader-name">${traderInfo.title}</h3>`);
     trader.append(name);
@@ -159,68 +164,74 @@ function addTrader(traderInfo) {
     description.html(`"${traderInfo.description}"`);
     trader.append(description);
 
-    let buySubheading = $(`<h5>Buy</h5>`);
-    trader.append(buySubheading);
+    if (traderInfo.willSell.length !== 0) {
+        let buySubheading = $(`<h5>Buy</h5>`);
+        trader.append(buySubheading);
 
-    let table = $(`<table class="u-full-width trader-table buy"></table>`);
-    let tbody = $(`<tbody></tbody>`);
-    for (let productToSell of traderInfo.willSell) {
-        let tr = $(`<tr></tr>`);
-        let productName = $(`<td class="product-name"></td>`);
-        productName.text(`${productToSell.multipack} x ${productToSell.product}`);
-        tr.append(productName);
-        let productPrice = $(`<td class="product-price"></td>`);
-        productPrice.text(priceFromPennies(productToSell.price));
-        tr.append(productPrice);
-        tbody.append(tr);
+        let table = $(`<table class="u-full-width trader-table buy"></table>`);
+        let tbody = $(`<tbody></tbody>`);
+        for (let productToSell of traderInfo.willSell) {
+            let tr = $(`<tr></tr>`);
+            let productName = $(`<td class="product-name"></td>`);
+            productName.text(`${productToSell.multipack} x ${productToSell.product}`);
+            tr.append(productName);
+            let productPrice = $(`<td class="product-price"></td>`);
+            productPrice.text(priceFromPennies(productToSell.price));
+            tr.append(productPrice);
+            tbody.append(tr);
+        }
+
+        tbody.html();
+        table.html(tbody);
+        trader.append(table);
     }
 
-    tbody.html();
-    table.html(tbody);
-    trader.append(table);
+    if (traderInfo.willBuy.length !== 0) {
+        let sellSubheading = $(`<h5>Sell</h5>`);
+        trader.append(sellSubheading);
 
-    let sellSubheading = $(`<h5>Sell</h5>`);
-    trader.append(sellSubheading);
+        let table = $(`<table class="u-full-width trader-table sell"></table>`);
+        let tbody = $(`<tbody></tbody>`);
+        for (let productToBuy of traderInfo.willBuy) {
+            let tr = $(`<tr></tr>`);
 
-    table = $(`<table class="u-full-width trader-table sell"></table>`);
-    tbody = $(`<tbody></tbody>`);
-    for (let productToBuy of traderInfo.willBuy) {
-        let tr = $(`<tr></tr>`);
+            let productPrice = $(`<td class="product-price"></td>`);
+            productPrice.text(priceFromPennies(productToBuy.price));
+            tr.append(productPrice);
 
-        let productPrice = $(`<td class="product-price"></td>`);
-        productPrice.text(priceFromPennies(productToBuy.price));
-        tr.append(productPrice);
+            let productName = $(`<td class="product-name"></td>`);
+            productName.text(`${productToBuy.multipack} x ${productToBuy.product}`);
+            tr.append(productName);
 
-        let productName = $(`<td class="product-name"></td>`);
-        productName.text(`${productToBuy.multipack} x ${productToBuy.product}`);
-        tr.append(productName);
+            tbody.append(tr);
+        }
 
-        tbody.append(tr);
+        table.html(tbody);
+        trader.append(table);
     }
 
-    table.html(tbody);
-    trader.append(table);
+    if (traderInfo.willTrade.length !== 0) {
+        let tradeSubheading = $(`<h5>Trade</h5>`);
+        trader.append(tradeSubheading);
 
-    let tradeSubheading = $(`<h5>Trade</h5>`);
-    trader.append(tradeSubheading);
+        let table = $(`<table class="u-full-width trader-table trades"></table>`);
+        let tbody = $(`<tbody></tbody>`);
+        for (let tradeInfo of traderInfo.willTrade) {
+            let tr = $(`<tr></tr>`);
 
-    table = $(`<table class="u-full-width trader-table trades"></table>`);
-    tbody = $(`<tbody></tbody>`);
-    for (let tradeInfo of traderInfo.willTrade) {
-        let tr = $(`<tr></tr>`);
+            let product = $(`<td class="product-price"></td>`);
+            product.html(`${tradeInfo.productMultipack} x ${tradeInfo.product}`);
+            tr.append(product);
+            let price = $(`<td class="product-name"></td>`);
+            price.html(`${tradeInfo.priceMultipack} x ${tradeInfo.price}`);
+            tr.append(price);
 
-        let product = $(`<td class="product-price"></td>`);
-        product.html(`${tradeInfo.productMultipack} x ${tradeInfo.product}`);
-        tr.append(product);
-        let price = $(`<td class="product-name"></td>`);
-        price.html(`${tradeInfo.priceMultipack} x ${tradeInfo.price}`);
-        tr.append(price);
+            tbody.append(tr);
+        }
 
-        tbody.append(tr);
+        table.html(tbody);
+        trader.append(table);
     }
-
-    table.html(tbody);
-    trader.append(table);
 
     traders.append(trader);
  }
@@ -231,6 +242,8 @@ function addTrader(traderInfo) {
  */
 function loadTraders() {
     "use strict";
+    let traders = $(".traders");
+    traders.html("");
     for (let trader of g.player.location.traders) {
         addTrader(trader);
     }

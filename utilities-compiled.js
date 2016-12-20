@@ -16,7 +16,7 @@ function numberToString(n) {
         var c = '',
             m = 0;
         if (100 <= n) {
-            m = Math.floor(n / 100);c += triplets(m) + ' hundred';n -= m * 100;
+            m = Math.floor(n / 100);c += triplets(m) + ' Hundred';n -= m * 100;
         }
         n.toString().replace(/^[2-9](?=\d)/, function (a) {
             c += (m ? '  and ' : ' ') + 'Twenty,Thirty,Forty,Fifty,Sixty,Seventy,Eighty,Ninety'.split(',')[a - 2];n -= +a * 10;
@@ -130,6 +130,12 @@ function priceFromPennies(n) {
 
     if (pounds && pence) {
         return numberToString(pounds) + " Pounds, " + numberToString(pence) + " Pence";
+    } else if (pounds) {
+        return numberToString(pounds) + " Pounds";
+    } else if (pence) {
+        return numberToString(pence) + " Pence";
+    } else {
+        return "Free of Charge or Obligation";
     }
 }
 
@@ -165,7 +171,6 @@ function addTrader(traderInfo) {
     "use strict";
 
     var traders = $(".traders");
-    traders.html("");
     var trader = $('<li class="trader"></li>');
     var name = $('<h3 class="trader-name">' + traderInfo.title + '</h3>');
     trader.append(name);
@@ -174,131 +179,137 @@ function addTrader(traderInfo) {
     description.html('"' + traderInfo.description + '"');
     trader.append(description);
 
-    var buySubheading = $('<h5>Buy</h5>');
-    trader.append(buySubheading);
+    if (traderInfo.willSell.length !== 0) {
+        var buySubheading = $('<h5>Buy</h5>');
+        trader.append(buySubheading);
 
-    var table = $('<table class="u-full-width trader-table buy"></table>');
-    var tbody = $('<tbody></tbody>');
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+        var table = $('<table class="u-full-width trader-table buy"></table>');
+        var tbody = $('<tbody></tbody>');
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-    try {
-        for (var _iterator = traderInfo.willSell[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var productToSell = _step.value;
-
-            var tr = $('<tr></tr>');
-            var productName = $('<td class="product-name"></td>');
-            productName.text(productToSell.multipack + ' x ' + productToSell.product);
-            tr.append(productName);
-            var productPrice = $('<td class="product-price"></td>');
-            productPrice.text(priceFromPennies(productToSell.price));
-            tr.append(productPrice);
-            tbody.append(tr);
-        }
-    } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-    } finally {
         try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
+            for (var _iterator = traderInfo.willSell[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var productToSell = _step.value;
+
+                var tr = $('<tr></tr>');
+                var productName = $('<td class="product-name"></td>');
+                productName.text(productToSell.multipack + ' x ' + productToSell.product);
+                tr.append(productName);
+                var productPrice = $('<td class="product-price"></td>');
+                productPrice.text(priceFromPennies(productToSell.price));
+                tr.append(productPrice);
+                tbody.append(tr);
             }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
         } finally {
-            if (_didIteratorError) {
-                throw _iteratorError;
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
             }
         }
+
+        tbody.html();
+        table.html(tbody);
+        trader.append(table);
     }
 
-    tbody.html();
-    table.html(tbody);
-    trader.append(table);
+    if (traderInfo.willBuy.length !== 0) {
+        var sellSubheading = $('<h5>Sell</h5>');
+        trader.append(sellSubheading);
 
-    var sellSubheading = $('<h5>Sell</h5>');
-    trader.append(sellSubheading);
+        var _table = $('<table class="u-full-width trader-table sell"></table>');
+        var _tbody = $('<tbody></tbody>');
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
-    table = $('<table class="u-full-width trader-table sell"></table>');
-    tbody = $('<tbody></tbody>');
-    var _iteratorNormalCompletion2 = true;
-    var _didIteratorError2 = false;
-    var _iteratorError2 = undefined;
-
-    try {
-        for (var _iterator2 = traderInfo.willBuy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var productToBuy = _step2.value;
-
-            var _tr = $('<tr></tr>');
-
-            var _productPrice = $('<td class="product-price"></td>');
-            _productPrice.text(priceFromPennies(productToBuy.price));
-            _tr.append(_productPrice);
-
-            var _productName = $('<td class="product-name"></td>');
-            _productName.text(productToBuy.multipack + ' x ' + productToBuy.product);
-            _tr.append(_productName);
-
-            tbody.append(_tr);
-        }
-    } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-    } finally {
         try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
+            for (var _iterator2 = traderInfo.willBuy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var productToBuy = _step2.value;
+
+                var _tr = $('<tr></tr>');
+
+                var _productPrice = $('<td class="product-price"></td>');
+                _productPrice.text(priceFromPennies(productToBuy.price));
+                _tr.append(_productPrice);
+
+                var _productName = $('<td class="product-name"></td>');
+                _productName.text(productToBuy.multipack + ' x ' + productToBuy.product);
+                _tr.append(_productName);
+
+                _tbody.append(_tr);
             }
+        } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
         } finally {
-            if (_didIteratorError2) {
-                throw _iteratorError2;
+            try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                    _iterator2.return();
+                }
+            } finally {
+                if (_didIteratorError2) {
+                    throw _iteratorError2;
+                }
             }
         }
+
+        _table.html(_tbody);
+        trader.append(_table);
     }
 
-    table.html(tbody);
-    trader.append(table);
+    if (traderInfo.willTrade.length !== 0) {
+        var tradeSubheading = $('<h5>Trade</h5>');
+        trader.append(tradeSubheading);
 
-    var tradeSubheading = $('<h5>Trade</h5>');
-    trader.append(tradeSubheading);
+        var _table2 = $('<table class="u-full-width trader-table trades"></table>');
+        var _tbody2 = $('<tbody></tbody>');
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
 
-    table = $('<table class="u-full-width trader-table trades"></table>');
-    tbody = $('<tbody></tbody>');
-    var _iteratorNormalCompletion3 = true;
-    var _didIteratorError3 = false;
-    var _iteratorError3 = undefined;
-
-    try {
-        for (var _iterator3 = traderInfo.willTrade[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-            var tradeInfo = _step3.value;
-
-            var _tr2 = $('<tr></tr>');
-
-            var product = $('<td class="product-price"></td>');
-            product.html(tradeInfo.productMultipack + ' x ' + tradeInfo.product);
-            _tr2.append(product);
-            var price = $('<td class="product-name"></td>');
-            price.html(tradeInfo.priceMultipack + ' x ' + tradeInfo.price);
-            _tr2.append(price);
-
-            tbody.append(_tr2);
-        }
-    } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-    } finally {
         try {
-            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                _iterator3.return();
+            for (var _iterator3 = traderInfo.willTrade[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var tradeInfo = _step3.value;
+
+                var _tr2 = $('<tr></tr>');
+
+                var product = $('<td class="product-price"></td>');
+                product.html(tradeInfo.productMultipack + ' x ' + tradeInfo.product);
+                _tr2.append(product);
+                var price = $('<td class="product-name"></td>');
+                price.html(tradeInfo.priceMultipack + ' x ' + tradeInfo.price);
+                _tr2.append(price);
+
+                _tbody2.append(_tr2);
             }
+        } catch (err) {
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
         } finally {
-            if (_didIteratorError3) {
-                throw _iteratorError3;
+            try {
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                    _iterator3.return();
+                }
+            } finally {
+                if (_didIteratorError3) {
+                    throw _iteratorError3;
+                }
             }
         }
-    }
 
-    table.html(tbody);
-    trader.append(table);
+        _table2.html(_tbody2);
+        trader.append(_table2);
+    }
 
     traders.append(trader);
 }
@@ -309,6 +320,8 @@ function addTrader(traderInfo) {
 function loadTraders() {
     "use strict";
 
+    var traders = $(".traders");
+    traders.html("");
     var _iteratorNormalCompletion4 = true;
     var _didIteratorError4 = false;
     var _iteratorError4 = undefined;

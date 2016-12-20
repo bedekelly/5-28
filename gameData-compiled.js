@@ -33,7 +33,7 @@ var HONEST_PETE = new Trader("Honest Pete", "Pete's Perfectly Legal Goods", "Shh
 // Buy:
 [{
     product: "Chamois Leather Cloth",
-    price: 430,
+    price: 43200,
     quantityLeft: 3,
     multipack: 5
 }, {
@@ -61,6 +61,22 @@ var HONEST_PETE = new Trader("Honest Pete", "Pete's Perfectly Legal Goods", "Shh
     price: "Scrap of Arcane Knowledge",
     priceMultipack: 5
 }]);
+
+var MR_BAKER = new Trader("Mr. Baker", "Mr. Baker's Electric Supply Co.", "Is your Wireless on the fritz? Does your Mechanized Mustard-Cutter just not\n     cut the mustard any more? Hurry on down to Mr. Baker's Electric Supply Co.,\n    and we'll whip those newfangled automatons into shape.",
+
+// Buy:
+[{
+    product: "Pieces of Scrap Metal",
+    price: 400,
+    quantityLeft: 10,
+    multipack: 15
+}],
+
+// Sell:
+[],
+
+// Trade:
+[]);
 
 var OUTSIDE_APARTMENT = new Location("A Bustling Alleyway", "Framed by dirty, squat buildings, this alley is home to some of the worst\n    company in all of the East Tunnel.", "It's not all bad, though: the Solstice markets are opening, and there are\n    always bargains to be had. Potentially, bargains of questionable legality -\n    but what the Invigilators don't know can't hurt them.", [new GameOption("Return to your lodgings", function () {
     g.player.moveLocation(STUDY);
@@ -134,7 +150,7 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
 }), new GameOption("Trade in the market", function () {
     g.ledger.write("You start peeling your eyes for a bargain.\n                The markets can yield some rather curious and rare items...\n                for a price, of course.");
     enterTrading();
-})], [], [HONEST_PETE]);
+})], [], [MR_BAKER, HONEST_PETE]);
 
 var DEFAULT_LOCATION = THE_STRIP;
 
