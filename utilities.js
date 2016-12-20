@@ -150,6 +150,7 @@ function priceFromPennies(n) {
 function addTrader(traderInfo) {
     "use strict";
     let traders = $(".traders");
+    traders.html("");
     let trader = $(`<li class="trader"></li>`);
     let name = $(`<h3 class="trader-name">${traderInfo.title}</h3>`);
     trader.append(name);
@@ -206,16 +207,13 @@ function addTrader(traderInfo) {
     table = $(`<table class="u-full-width trader-table trades"></table>`);
     tbody = $(`<tbody></tbody>`);
     for (let tradeInfo of traderInfo.willTrade) {
-        // product, productMultipack, price, priceMultipack
         let tr = $(`<tr></tr>`);
 
-        let product = $(`<td class="product-price">
-            ${tradeInfo.productMultipack} x ${tradeInfo.product}
-        </td>`);
+        let product = $(`<td class="product-price"></td>`);
+        product.html(`${tradeInfo.productMultipack} x ${tradeInfo.product}`);
         tr.append(product);
-        let price = $(`<td class="product-name">
-            ${tradeInfo.priceMultipack} x ${tradeInfo.price}
-        </td>`);
+        let price = $(`<td class="product-name"></td>`);
+        price.html(`${tradeInfo.priceMultipack} x ${tradeInfo.price}`);
         tr.append(price);
 
         tbody.append(tr);

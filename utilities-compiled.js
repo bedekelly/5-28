@@ -165,6 +165,7 @@ function addTrader(traderInfo) {
     "use strict";
 
     var traders = $(".traders");
+    traders.html("");
     var trader = $('<li class="trader"></li>');
     var name = $('<h3 class="trader-name">' + traderInfo.title + '</h3>');
     trader.append(name);
@@ -270,12 +271,13 @@ function addTrader(traderInfo) {
         for (var _iterator3 = traderInfo.willTrade[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
             var tradeInfo = _step3.value;
 
-            // product, productMultipack, price, priceMultipack
             var _tr2 = $('<tr></tr>');
 
-            var product = $('<td class="product-price">\n            ' + tradeInfo.productMultipack + ' x ' + tradeInfo.product + '\n        </td>');
+            var product = $('<td class="product-price"></td>');
+            product.html(tradeInfo.productMultipack + ' x ' + tradeInfo.product);
             _tr2.append(product);
-            var price = $('<td class="product-name">\n            ' + tradeInfo.priceMultipack + ' x ' + tradeInfo.price + '\n        </td>');
+            var price = $('<td class="product-name"></td>');
+            price.html(tradeInfo.priceMultipack + ' x ' + tradeInfo.price);
             _tr2.append(price);
 
             tbody.append(_tr2);

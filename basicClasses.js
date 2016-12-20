@@ -77,7 +77,7 @@ class ItemStack {
     }
 
     toString() {
-        return `${numberToString(this.numberItems)} ${this.item.name}`
+        return `${this.numberItems} x ${this.item.name}`
     }
 }
 

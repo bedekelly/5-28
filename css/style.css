@@ -1,3 +1,6 @@
+/* THE MOST IMPORTANT THING IN THIS FILE */
+*::-webkit-scrollbar { width: 0 !important }
+
 /* Add some padding for the buttons. */
 button {
     margin: 5px;
@@ -78,7 +81,7 @@ body, html {
     overflow-y: scroll !important;
 }
 
-*::-webkit-scrollbar { width: 0 !important }
+
 
 #traders-wrapper {
     z-index: 1;
@@ -140,5 +143,5 @@ body, html {
 
 #trading h1 span:hover {
     cursor: default;
-    font-weight: bold;
+    color: #dacfbf;
 }
