@@ -23,6 +23,7 @@ $(document).ready(function () {
 
     /* If it hasn't already updated, update the display now. */
     updateDisplay(g.player);
+    enterTrading();
 });
 
 //# sourceMappingURL=index-compiled.js.map

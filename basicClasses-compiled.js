@@ -92,7 +92,7 @@ var QualityContainer = function () {
 var Location = function (_QualityContainer) {
     _inherits(Location, _QualityContainer);
 
-    function Location(name, descA, descB, defaultOptions, defaultQualities) {
+    function Location(name, descA, descB, defaultOptions, defaultQualities, traders) {
         _classCallCheck(this, Location);
 
         var _this = _possibleConstructorReturn(this, (Location.__proto__ || Object.getPrototypeOf(Location)).call(this, defaultQualities));
@@ -101,6 +101,7 @@ var Location = function (_QualityContainer) {
         _this.descA = descA;
         _this.descB = descB;
         _this.defaultOptions = defaultOptions;
+        _this.traders = traders;
         return _this;
     }
 
@@ -421,5 +422,16 @@ var InventoryInterface = function () {
 
     return InventoryInterface;
 }();
+
+var Trader = function Trader(name, title, description, willSell, willBuy, willTrade) {
+    _classCallCheck(this, Trader);
+
+    this.name = name;
+    this.title = title;
+    this.description = description;
+    this.willSell = willSell;
+    this.willBuy = willBuy;
+    this.willTrade = willTrade;
+};
 
 //# sourceMappingURL=basicClasses-compiled.js.map

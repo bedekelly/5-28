@@ -4,6 +4,64 @@ var DEFAULT_LEDGER_ITEMS = ["This is your ledger. Your story as you travel throu
 
 var DEFAULT_ITEMS = [new Item("Rusted Blunderbuss"), new Item("Penny Farthing"), new Item("Mysterious Noise")];
 
+/**
+                    HTML Structure for traders
+                        li.trader
+                            h3.trader-name
+                            p.trader-description
+                            h5.trader-subheading & buy
+                            table.trader-table & buy
+                                tbody
+                                    tr
+                                        td.product-name
+                                        td.product-price
+                            h5.trader-subheading & sell
+                            table.trader-table & sell
+                                tbody
+                                    tr
+                                        td.product-price
+                                        td.product-name
+                            h5.trader-subheading & trade
+                            table.trader-table & trade
+                                tbody
+                                    tr
+                                        td.product-name
+                                        td.product-price
+*/
+var HONEST_PETE = new Trader("Honest Pete", "Pete's Perfectly Legal Goods", "Shh, don't speak so loud... don't want to attract any\n    <em>unwanted attention</em> now, do we? Let's see\n    if we can't fix you up with something special - for a bargain price.",
+
+// Buy:
+[{
+    product: "Chamois Leather Cloth",
+    price: 430,
+    quantityLeft: 3,
+    multipack: 5
+}, {
+    product: "Genuine Goat's Antler",
+    price: 690,
+    quantityLeft: 1,
+    multipack: 1
+}],
+
+// Sell:
+[{
+    product: "Rusted Blunderbuss",
+    multipack: 1,
+    price: 330
+}, {
+    product: "Mysterious Noise",
+    multipack: 1,
+    price: 288
+}],
+
+// Trade:
+[{
+    product: "Forged Season Rail Ticket",
+    productMultipack: 1,
+    price: "Scrap of Arcane Knowledge",
+    priceMultipack: 5
+}]);
+
 var OUTSIDE_APARTMENT = new Location("A Bustling Alleyway", "Framed by dirty, squat buildings, this alley is home to some of the worst\n    company in all of the East Tunnel.", "It's not all bad, though: the Solstice markets are opening, and there are\n    always bargains to be had. Potentially, bargains of questionable legality -\n    but what the Invigilators don't know can't hurt them.", [new GameOption("Return to your lodgings", function () {
     g.player.moveLocation(STUDY);
     g.ledger.add("You shimmy up the drainpipe, managing to avoid\n                scraping yourself on the rough brick surface it's stuck to. One\n                day, you really should invest in a set of spiral stairs -- although\n                the Invigilators may have some thoughts on the matter.");
@@ -76,8 +134,8 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
 }), new GameOption("Trade in the market", function () {
     g.ledger.write("You start peeling your eyes for a bargain.\n                The markets can yield some rather curious and rare items...\n                for a price, of course.");
     enterTrading();
-})], []);
+})], [], [HONEST_PETE]);
 
-var DEFAULT_LOCATION = STUDY;
+var DEFAULT_LOCATION = THE_STRIP;
 
 //# sourceMappingURL=gameData-compiled.js.map

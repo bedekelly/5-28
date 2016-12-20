@@ -11,6 +11,79 @@ const DEFAULT_ITEMS = [
 ];
 
 
+/**
+                    HTML Structure for traders
+                        li.trader
+                            h3.trader-name
+                            p.trader-description
+                            h5.trader-subheading & buy
+                            table.trader-table & buy
+                                tbody
+                                    tr
+                                        td.product-name
+                                        td.product-price
+                            h5.trader-subheading & sell
+                            table.trader-table & sell
+                                tbody
+                                    tr
+                                        td.product-price
+                                        td.product-name
+                            h5.trader-subheading & trade
+                            table.trader-table & trade
+                                tbody
+                                    tr
+                                        td.product-name
+                                        td.product-price
+*/
+const HONEST_PETE = new Trader(
+    "Honest Pete",
+    "Pete's Perfectly Legal Goods",
+    `Shh, don't speak so loud... don't want to attract any
+    <em>unwanted attention</em> now, do we? Let's see
+    if we can't fix you up with something special - for a bargain price.`,
+
+    // Buy:
+    [
+        {
+            product: `Chamois Leather Cloth`,
+            price: 430,
+            quantityLeft: 3,
+            multipack: 5
+        },
+        {
+            product: `Genuine Goat's Antler`,
+            price: 690,
+            quantityLeft: 1,
+            multipack: 1,
+        }
+    ],
+
+    // Sell:
+    [
+        {
+            product: `Rusted Blunderbuss`,
+            multipack: 1,
+            price: 330
+        },
+        {
+            product: `Mysterious Noise`,
+            multipack: 1,
+            price: 288,
+        }
+    ],
+
+    // Trade:
+    [
+        {
+            product: `Forged Season Rail Ticket`,
+            productMultipack: 1,
+            price: `Scrap of Arcane Knowledge`,
+            priceMultipack: 5,
+        }
+    ]
+);
+
+
 const OUTSIDE_APARTMENT = new Location(
     "A Bustling Alleyway",
     `Framed by dirty, squat buildings, this alley is home to some of the worst
@@ -217,8 +290,12 @@ alleyway, half-hidden by a coal-seller's stall.`);
             }
         )
     ],
-    []
+    [],
+    [HONEST_PETE]
 );
 
 
-const DEFAULT_LOCATION = STUDY;
+
+
+
+const DEFAULT_LOCATION = THE_STRIP;

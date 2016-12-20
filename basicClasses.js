@@ -51,12 +51,13 @@ class QualityContainer {
 
 
 class Location extends QualityContainer{
-    constructor(name, descA, descB, defaultOptions, defaultQualities) {
+    constructor(name, descA, descB, defaultOptions, defaultQualities, traders) {
         super(defaultQualities);
         this.name = name;
         this.descA = descA;
         this.descB = descB;
         this.defaultOptions = defaultOptions;
+        this.traders = traders;
     }
 }
 
@@ -266,5 +267,17 @@ class InventoryInterface {
                 $(`<li class="inventory-item">${itemStack.toString()}</li>`)
             );
         }
+    }
+}
+
+
+class Trader {
+    constructor(name, title, description, willSell, willBuy, willTrade) {
+        this.name = name;
+        this.title = title;
+        this.description = description;
+        this.willSell = willSell;
+        this.willBuy = willBuy;
+        this.willTrade = willTrade;
     }
 }
