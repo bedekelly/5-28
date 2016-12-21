@@ -142,6 +142,16 @@ body, html {
 }
 
 #trading h1 span:hover {
-    cursor: default;
+    cursor: pointer;
     color: #dacfbf;
+}
+
+.buy-button,.sell-button,.trade-button {
+    color: #222222;
+    text-decoration: none;
+}
+
+.buy-button:hover,.sell-button:hover,.trade-button:hover {
+    color: #dacfbf;
+    text-decoration: none;
 }

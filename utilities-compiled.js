@@ -197,6 +197,10 @@ function addTrader(traderInfo) {
                 var productName = $('<td class="product-name"></td>');
                 productName.text(productToSell.multipack + ' x ' + productToSell.product);
                 tr.append(productName);
+
+                var button = $('<td><a class="buy-button" href="#">-></a></td>');
+                tr.append(button);
+
                 var productPrice = $('<td class="product-price"></td>');
                 productPrice.text(priceFromPennies(productToSell.price));
                 tr.append(productPrice);
@@ -242,6 +246,9 @@ function addTrader(traderInfo) {
                 _productPrice.text(priceFromPennies(productToBuy.price));
                 _tr.append(_productPrice);
 
+                var _button = $('<td><a class="sell-button" href="#"><-</a></td>');
+                _tr.append(_button);
+
                 var _productName = $('<td class="product-name"></td>');
                 _productName.text(productToBuy.multipack + ' x ' + productToBuy.product);
                 _tr.append(_productName);
@@ -286,6 +293,10 @@ function addTrader(traderInfo) {
                 var product = $('<td class="product-price"></td>');
                 product.html(tradeInfo.productMultipack + ' x ' + tradeInfo.product);
                 _tr2.append(product);
+
+                var _button2 = $('<td><a class="trade-button" href="#"><-></a></td>');
+                _tr2.append(_button2);
+
                 var price = $('<td class="product-name"></td>');
                 price.html(tradeInfo.priceMultipack + ' x ' + tradeInfo.price);
                 _tr2.append(price);
