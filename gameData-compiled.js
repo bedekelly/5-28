@@ -114,14 +114,14 @@ var STUDY = new Location("A Dismal Study", "Property in the Tunnels is all about
 }), new GameOption("Find something to eat", function () {
     var ledger = g.ledger;
     var location = g.player.location;
-    if (!location.hasQualityWithName("stale bread")) {
+    if (!location.hasQualityWithName("Has Stale Bread")) {
         ledger.add("You scavenge for more food in your meagre\n                    kitchen, but you can't come up with anything resembling a \n                    meal.");
         return;
     }
     g.player.addItemStack(new ItemStack(3, new Item("Stale Breadcrumbs")));
     ledger.add("You find some bits of stale bread at the back of a" + " kitchen cupboard. Not particularly appetising, but" + " it'll have to do for now.");
-    location.removeQualityWithName("stale bread");
-})], [new Quality("stale bread")]);
+    location.removeQualityWithName("Has Stale Bread");
+})], [new Quality("Has Stale Bread")]);
 
 var OUTSIDE_FACTORY = new Location("An Imposing Factory", "Ahead of you, a dark, rectangular silhouette of the Factory blocks out the \n    rough tunnel wall. The wrought-iron gates look resolutely locked.", "This particular Factory is responsible for two-thirds of the mining gear\n    used on official Expeditions, or so you hear. It's also responsible for the\n    thick clouds of smog that roll through the open window of your apartment \n    most mornings.", [new GameOption("Walk south down Eastside", function () {
     "use strict";
@@ -153,5 +153,6 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
 })], [], [MR_BAKER, HONEST_PETE]);
 
 var DEFAULT_LOCATION = THE_STRIP;
+var DEFAULT_MONEY = 80377;
 
 //# sourceMappingURL=gameData-compiled.js.map

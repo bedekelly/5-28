@@ -44,7 +44,7 @@ function numberToString(n) {
 
 /** Load the save state from LocalStorage or similar. */
 function getSaveState() {
-    return new Player("Bede", DEFAULT_LOCATION);
+    return new Player("Bede", DEFAULT_LOCATION, DEFAULT_MONEY);
 }
 
 /** Returns an array of all option-cards currently onscreen. */
@@ -164,6 +164,25 @@ function priceFromPennies(n) {
                                         td.product-price
 */
 
+function failToBuy(product) {
+    "use strict";
+
+    g.ledger.write('Looks like you don\'t have enough to buy the ' + product.product + '.');
+}
+
+function tryToBuy(product) {
+    "use strict";
+
+    console.log(product);
+
+    if (g.inventory.contains("money", product.price)) {
+        g.inventory.removeMoney(product.price);
+        g.player.addItemStack(new ItemStack(product.multipack, new Item(product.product)));
+    } else {
+        failToBuy(product);
+    }
+}
+
 /**
  * Add a trader's information to the list of traders.
  */
@@ -190,7 +209,7 @@ function addTrader(traderInfo) {
         var _iteratorError = undefined;
 
         try {
-            for (var _iterator = traderInfo.willSell[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var _loop = function _loop() {
                 var productToSell = _step.value;
 
                 var tr = $('<tr></tr>');
@@ -199,12 +218,19 @@ function addTrader(traderInfo) {
                 tr.append(productName);
 
                 var button = $('<td><a class="buy-button" href="#">-></a></td>');
+                button.click(function () {
+                    tryToBuy(productToSell);
+                });
                 tr.append(button);
 
                 var productPrice = $('<td class="product-price"></td>');
                 productPrice.text(priceFromPennies(productToSell.price));
                 tr.append(productPrice);
                 tbody.append(tr);
+            };
+
+            for (var _iterator = traderInfo.willSell[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                _loop();
             }
         } catch (err) {
             _didIteratorError = true;
@@ -240,20 +266,20 @@ function addTrader(traderInfo) {
             for (var _iterator2 = traderInfo.willBuy[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                 var productToBuy = _step2.value;
 
-                var _tr = $('<tr></tr>');
+                var tr = $('<tr></tr>');
 
-                var _productPrice = $('<td class="product-price"></td>');
-                _productPrice.text(priceFromPennies(productToBuy.price));
-                _tr.append(_productPrice);
+                var productPrice = $('<td class="product-price"></td>');
+                productPrice.text(priceFromPennies(productToBuy.price));
+                tr.append(productPrice);
 
-                var _button = $('<td><a class="sell-button" href="#"><-</a></td>');
-                _tr.append(_button);
+                var button = $('<td><a class="sell-button" href="#"><-</a></td>');
+                tr.append(button);
 
-                var _productName = $('<td class="product-name"></td>');
-                _productName.text(productToBuy.multipack + ' x ' + productToBuy.product);
-                _tr.append(_productName);
+                var productName = $('<td class="product-name"></td>');
+                productName.text(productToBuy.multipack + ' x ' + productToBuy.product);
+                tr.append(productName);
 
-                _tbody.append(_tr);
+                _tbody.append(tr);
             }
         } catch (err) {
             _didIteratorError2 = true;
@@ -288,20 +314,20 @@ function addTrader(traderInfo) {
             for (var _iterator3 = traderInfo.willTrade[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                 var tradeInfo = _step3.value;
 
-                var _tr2 = $('<tr></tr>');
+                var _tr = $('<tr></tr>');
 
                 var product = $('<td class="product-price"></td>');
                 product.html(tradeInfo.productMultipack + ' x ' + tradeInfo.product);
-                _tr2.append(product);
+                _tr.append(product);
 
-                var _button2 = $('<td><a class="trade-button" href="#"><-></a></td>');
-                _tr2.append(_button2);
+                var _button = $('<td><a class="trade-button" href="#"><-></a></td>');
+                _tr.append(_button);
 
                 var price = $('<td class="product-name"></td>');
                 price.html(tradeInfo.priceMultipack + ' x ' + tradeInfo.price);
-                _tr2.append(price);
+                _tr.append(price);
 
-                _tbody2.append(_tr2);
+                _tbody2.append(_tr);
             }
         } catch (err) {
             _didIteratorError3 = true;
@@ -366,9 +392,9 @@ function loadTrading() {
     "use strict";
 
     var location = g.player.location.name;
-    var html = '<span onclick="exitTrading();">[<]</span> Trade: ' + location;
+    var backButton = '<span onclick="exitTrading();">Exit</span>';
+    var html = 'Trade: ' + location + ' | ' + backButton;
     $(".trading-title").html(html);
-    // Todo: Load in actual traders.
     loadTraders();
 }
 

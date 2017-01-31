@@ -180,7 +180,7 @@ var Scheduler = function () {
 var Player = function (_QualityContainer2) {
     _inherits(Player, _QualityContainer2);
 
-    function Player(name, location) {
+    function Player(name, location, money) {
         _classCallCheck(this, Player);
 
         var _this2 = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this, new Set()));
@@ -188,6 +188,7 @@ var Player = function (_QualityContainer2) {
         _this2.name = name;
         _this2.itemStacks = new Set();
         _this2.location = location;
+        _this2.money = money;
         return _this2;
     }
 
@@ -219,12 +220,13 @@ var Player = function (_QualityContainer2) {
         /**
          * Add a single item to our inventory.
          * @param i The Item we're adding.
-         * @param noAnimate Stop the item being animated.
          */
 
     }, {
         key: "addItem",
-        value: function addItem(i, noAnimate) {
+        value: function addItem(i) {
+            console.log("Adding: ");
+            console.log(i);
             var stackFound = false;
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
@@ -234,7 +236,7 @@ var Player = function (_QualityContainer2) {
                 for (var _iterator2 = this.itemStacks[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var _stack = _step2.value;
 
-                    if (_stack.item.name == i.name) {
+                    if (_stack.item.name === i.name) {
                         _stack.numberItems++;
                         stackFound = true;
                         break;
@@ -256,39 +258,10 @@ var Player = function (_QualityContainer2) {
             }
 
             if (!stackFound) {
-                this.itemStacks.add(new ItemStack(1, i));
-            }
-
-            if (!stackFound) {
-                var _iteratorNormalCompletion3 = true;
-                var _didIteratorError3 = false;
-                var _iteratorError3 = undefined;
-
-                try {
-                    for (var _iterator3 = this.itemStacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                        var stack = _step3.value;
-
-                        if (stack.item.name == i.name) {
-                            g.inventory.add(stack, !noAnimate);
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError3 = true;
-                    _iteratorError3 = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                            _iterator3.return();
-                        }
-                    } finally {
-                        if (_didIteratorError3) {
-                            throw _iteratorError3;
-                        }
-                    }
-                }
+                var stack = new ItemStack(1, i);
+                this.itemStacks.add(stack);
             } else {
                 // Todo: pulse the right one.
-                g.inventory.updateAll();
             }
         }
 
@@ -301,6 +274,7 @@ var Player = function (_QualityContainer2) {
     }, {
         key: "addItemStack",
         value: function addItemStack(stack) {
+            console.log("adding stack");
             var num = stack.numberItems;
             var item = stack.item;
             for (var i = 0; i < num; i++) {
@@ -383,6 +357,8 @@ var InventoryInterface = function () {
         value: function updateAllNoAnimate() {
             var _this4 = this;
 
+            console.log("here");
+            $(".money").text(g.player.money / 100);
             currentInventoryItems().forEach(function (i) {
                 return i.remove();
             });
@@ -400,18 +376,68 @@ var InventoryInterface = function () {
                     _this5.updateAllNoAnimate();
                     $("#inventory-items").fadeIn(500);
                 });
+            } else {
+                this.updateAllNoAnimate();
             }
         }
     }, {
         key: "add",
         value: function add(itemStack, animate) {
             if (animate) {
-                var elem = $("<li style=\"display: none;\" class=\"inventory-item\">" + itemStack.toString() + "</li>");
+                var elem = $("<li style=\"display:none;\" class=\"inventory-item\">" + itemStack.toString() + "</li>");
                 this.inventory.append(elem);
                 elem.fadeIn(500);
             } else {
                 this.inventory.append($("<li class=\"inventory-item\">" + itemStack.toString() + "</li>"));
             }
+        }
+    }, {
+        key: "contains",
+        value: function contains(productName, productAmount) {
+            switch (productName) {
+                case "money":
+                    return g.player.money >= productAmount;
+                default:
+                    var _iteratorNormalCompletion3 = true;
+                    var _didIteratorError3 = false;
+                    var _iteratorError3 = undefined;
+
+                    try {
+                        for (var _iterator3 = g.player.itemStacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                            var elem = _step3.value;
+
+                            if (elem.item.name === productName) {
+                                return elem.numberItems >= productAmount;
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError3 = true;
+                        _iteratorError3 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                _iterator3.return();
+                            }
+                        } finally {
+                            if (_didIteratorError3) {
+                                throw _iteratorError3;
+                            }
+                        }
+                    }
+
+                    return false;
+            }
+        }
+    }, {
+        key: "removeMoney",
+        value: function removeMoney(amount) {
+            var _this6 = this;
+
+            $(".money").fadeOut(500, function () {
+                g.player.money -= amount;
+                _this6.updateAllNoAnimate();
+                $(".money").fadeIn(500);
+            });
         }
     }], [{
         key: "_findInventory",

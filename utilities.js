@@ -31,7 +31,7 @@ function numberToString(n) {
 
 /** Load the save state from LocalStorage or similar. */
 function getSaveState() {
-    return new Player("Bede", DEFAULT_LOCATION);
+    return new Player("Bede", DEFAULT_LOCATION, DEFAULT_MONEY);
 }
 
 
@@ -150,6 +150,32 @@ function priceFromPennies(n) {
 */
 
 
+function failToBuy(product) {
+    "use strict";
+    g.ledger.write(
+        `Looks like you don't have enough to buy the ${product.product}.`
+    );
+}
+
+
+function tryToBuy(product) {
+    "use strict";
+    console.log(product);
+
+    if (g.inventory.contains("money", product.price)) {
+        g.inventory.removeMoney(product.price);
+        g.player.addItemStack(
+            new ItemStack(
+                product.multipack,
+                new Item(product.product)
+            )
+        )
+    } else {
+        failToBuy(product);
+    }
+}
+
+
 /**
  * Add a trader's information to the list of traders.
  */
@@ -177,6 +203,9 @@ function addTrader(traderInfo) {
             tr.append(productName);
 
             let button = $(`<td><a class="buy-button" href="#">-></a></td>`);
+            button.click(() => {
+                tryToBuy(productToSell);
+            });
             tr.append(button);
 
             let productPrice = $(`<td class="product-price"></td>`);
@@ -267,9 +296,9 @@ function loadTraders() {
 function loadTrading() {
     "use strict";
     let location = g.player.location.name;
-    let html = `<span onclick="exitTrading();">[<]</span> Trade: ${location}`;
+    let backButton = `<span onclick="exitTrading();">Exit</span>`;
+    let html = `Trade: ${location} | ${backButton}`;
     $(".trading-title").html(html);
-    // Todo: Load in actual traders.
     loadTraders();
 }
 

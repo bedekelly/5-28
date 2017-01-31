@@ -155,3 +155,8 @@ body, html {
     color: #dacfbf;
     text-decoration: none;
 }
+
+.items-title {
+    font-size: 150%;
+    margin-bottom: 10px;
+}

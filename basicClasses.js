@@ -115,11 +115,12 @@ class Scheduler {
  * A Player holds information about what the current player can do.
  */
 class Player extends QualityContainer {
-    constructor(name, location) {
+    constructor(name, location, money) {
         super(new Set());
         this.name = name;
         this.itemStacks = new Set();
         this.location = location;
+        this.money = money;
     }
 
     /**
@@ -145,32 +146,23 @@ class Player extends QualityContainer {
     /**
      * Add a single item to our inventory.
      * @param i The Item we're adding.
-     * @param noAnimate Stop the item being animated.
      */
-    addItem(i, noAnimate) {
+    addItem(i) {
+        console.log("Adding: ");
+        console.log(i);
         let stackFound = false;
         for (let stack of this.itemStacks) {
-            if (stack.item.name == i.name) {
+            if (stack.item.name === i.name) {
                 stack.numberItems++;
                 stackFound = true;
                 break;
             }
         }
         if (!stackFound) {
-            this.itemStacks.add(
-                new ItemStack(1, i)
-            )
-        }
-
-        if (!stackFound) {
-            for (let stack of this.itemStacks) {
-                if (stack.item.name == i.name) {
-                    g.inventory.add(stack, !noAnimate);
-                }
-            }
+            let stack = new ItemStack(1, i);
+            this.itemStacks.add(stack);
         } else {
             // Todo: pulse the right one.
-            g.inventory.updateAll();
         }
     }
 
@@ -180,6 +172,7 @@ class Player extends QualityContainer {
      * @param stack
      */
     addItemStack(stack) {
+        console.log("adding stack");
         let num = stack.numberItems;
         let item = stack.item;
         for (let i=0; i<num; i++) {
@@ -244,6 +237,8 @@ class InventoryInterface {
     }
 
     updateAllNoAnimate() {
+        console.log("here");
+        $(".money").text(g.player.money/100);
         currentInventoryItems().forEach(i => i.remove());
         g.player.itemStacks.forEach(i => this.add(i));
     }
@@ -254,12 +249,14 @@ class InventoryInterface {
                 this.updateAllNoAnimate();
                 $("#inventory-items").fadeIn(500);
             });
+        } else {
+            this.updateAllNoAnimate();
         }
     }
 
     add(itemStack, animate) {
         if (animate) {
-            let elem = $(`<li style="display: none;" class="inventory-item">${itemStack.toString()}</li>`);
+            let elem = $(`<li style="display:none;" class="inventory-item">${itemStack.toString()}</li>`);
             this.inventory.append(elem);
             elem.fadeIn(500);
         } else {
@@ -267,6 +264,29 @@ class InventoryInterface {
                 $(`<li class="inventory-item">${itemStack.toString()}</li>`)
             );
         }
+    }
+
+    contains(productName, productAmount) {
+        switch(productName) {
+            case "money":
+                return g.player.money >= productAmount;
+            default:
+                for (let elem of g.player.itemStacks) {
+                    if (elem.item.name === productName) {
+                        return elem.numberItems >= productAmount;
+                    }
+                }
+                return false;
+        }
+    }
+
+    removeMoney(amount) {
+        $(".money").fadeOut(500, () => {
+            g.player.money -= amount;
+            this.updateAllNoAnimate();
+            $(".money").fadeIn(500);
+        });
+
     }
 }
 
