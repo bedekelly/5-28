@@ -158,10 +158,16 @@ function failToBuy(product) {
 }
 
 
+function failToSell(product) {
+    "use strict";
+    g.ledger.write(
+        `Looks like you don't have the ${product.product} to sell.`
+    )
+}
+
+
 function tryToBuy(product) {
     "use strict";
-    console.log(product);
-
     if (g.inventory.contains("money", product.price)) {
         g.inventory.removeMoney(product.price);
         g.player.addItemStack(
@@ -172,6 +178,55 @@ function tryToBuy(product) {
         )
     } else {
         failToBuy(product);
+    }
+}
+
+
+function tryToSell(product) {
+    "use strict";
+    console.log(product);
+    if (g.inventory.contains(product.product, product.multipack)) {
+        g.player.removeItemStack(
+            new ItemStack(
+                product.multipack, new Item(product.product)
+            )
+        );
+        g.inventory.removeMoney(-product.price);
+        g.inventory.updateAllNoAnimate();
+    } else {
+        failToSell(product);
+    }
+}
+
+
+function failToTrade(tradeInfo) {
+    "use strict";
+    g.ledger.write(
+        `Looks like you don't have the ${tradeInfo.price} to trade.`
+    )
+}
+
+
+function tryToTrade(tradeInfo) {
+    "use strict";
+    console.log(tradeInfo);
+    if (g.inventory.contains(tradeInfo.price, tradeInfo.priceMultipack)) {
+        g.player.removeItemStack(
+            new ItemStack(
+                tradeInfo.priceMultipack,
+                new Item(tradeInfo.price
+                )
+            )
+        );
+        g.player.addItemStack(
+            new ItemStack(
+                tradeInfo.productMultipack,
+                new Item(tradeInfo.product)
+            )
+        );
+        g.inventory.updateAllNoAnimate();
+    } else {
+        failToTrade(tradeInfo);
     }
 }
 
@@ -233,6 +288,9 @@ function addTrader(traderInfo) {
             tr.append(productPrice);
 
             let button = $(`<td><a class="sell-button" href="#"><-</a></td>`);
+            button.click(() => {
+                tryToSell(productToBuy)
+            });
             tr.append(button);
 
             let productName = $(`<td class="product-name"></td>`);
@@ -260,6 +318,9 @@ function addTrader(traderInfo) {
             tr.append(product);
 
             let button = $(`<td><a class="trade-button" href="#"><-></a></td>`);
+            button.click(() => {
+                tryToTrade(tradeInfo);
+            });
             tr.append(button);
 
             let price = $(`<td class="product-name"></td>`);
@@ -320,6 +381,7 @@ function enterTrading() {
 function exitTrading() {
     "use strict";
     $("#trading").fadeOut(500, () => {
+        updateDisplayNoAnimate();
         $("#main-content").fadeIn(500);
     });
 }

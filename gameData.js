@@ -104,7 +104,14 @@ const MR_BAKER = new Trader(
     [],
 
     // Trade:
-    []
+    [
+        {
+            price: `Genuine Goat's Antler`,
+            priceMultipack: 1,
+            product: `Induction Coil`,
+            productMultipack: 1
+        }
+    ]
 );
 
 
@@ -210,9 +217,11 @@ drainpipe to the street outside. Never hurts to make an appearance, eh?`);
                     meal.`);
                     return;
                 }
+                let itemStack = new ItemStack(3, new Item("Stale Breadcrumbs"));
                 g.player.addItemStack(
-                    new ItemStack(3, new Item("Stale Breadcrumbs"))
+                    itemStack
                 );
+                g.inventory.add(itemStack, true);
                 ledger.add("You find some bits of stale bread at the back of a"
                     + " kitchen cupboard. Not particularly appetising, but"
                     + " it'll have to do for now.");
@@ -249,7 +258,7 @@ const OUTSIDE_FACTORY = new Location(
         new GameOption(
             "Walk west towards the station",
             () => {
-                g.player.moveLocation(STATION);
+                g.player.moveLocation(EASTSIDE_STATION);
                 g.ledger.add(`You walk briskly west, and a squat, unassuming
                 railway station appears to your right.`)
             }
@@ -257,7 +266,7 @@ const OUTSIDE_FACTORY = new Location(
     ], []
 );
 
-const STATION = new Location(
+const EASTSIDE_STATION = new Location(
     "An Unassuming Station",
     `The underground Railway is serviced by dozens of stations just like this
      one, signposted Eastside. All in the same, grimy condition.`,
@@ -268,10 +277,23 @@ const STATION = new Location(
     [
         new GameOption(
             "Buy a Single Ticket", () => {
-                g.ledger.write(`You spot an unassuming brass machine for 
+                if (g.player.money < 500) {
+                    g.ledger.write(`You spot an unassuming brass machine for 
                 printing tickets. The only problem: you don't have the 
                 cash for a single ticket, let alone some of the machine's more 
-                extravagant offerings.`)
+                extravagant offerings.`);
+                    return;
+                }
+                g.ledger.write(`You spot an unassuming brass machine for
+                printing tickets. With cash in hand you advance on the machine
+                and, with a bit of a kerfuffle, you coerce it into spitting out
+                a short Permit To Travel stub.`);
+
+                g.player.money -= 500;
+                g.player.addItemStack(
+                    new ItemStack(1, new Item("Single Ticket"))
+                );
+                updateDisplayNoAnimate();
             }
         ),
         new GameOption(
@@ -281,8 +303,50 @@ const STATION = new Location(
                 silhouette looms out of the smog and mist ahead of you.`);
                 g.player.moveLocation(OUTSIDE_FACTORY);
             }
+        ),
+        new GameOption(
+            "Take a train to Northside", () => {
+                "use strict";
+                //g.ledger.write(``)
+                g.player.moveLocation(NORTHSIDE_STATION);
+            },
+            (g) => {
+                "use strict";
+                return g.inventory.contains("Single Ticket", 1);
+            }
         )
     ], []
+);
+
+const NORTHSIDE_STATION = new Location(
+    "Northside",
+    `Northside is another place`,
+    `It's pretty rad`,
+    [
+        new GameOption(
+            "Enter Trading", () => {
+                "use strict";
+                enterTrading();
+                g.player.location.removeQualityWithName("Never traded");
+            }, (g) => {
+                "use strict";
+                return g.player.location.hasQualityWithName("Never traded");
+            }
+        ),
+        new GameOption("Back to Eastside", () => {
+            "use strict";
+            g.player.moveLocation(EASTSIDE_STATION)
+        }, (g) => {
+            "use strict";
+            return g.inventory.contains("Single Ticket", 1);
+        })
+    ],
+    [
+        new Quality("Never traded")
+    ],
+    [
+        HONEST_PETE
+    ]
 );
 
 const THE_STRIP = new Location(
@@ -320,5 +384,5 @@ alleyway, half-hidden by a coal-seller's stall.`);
 
 
 
-const DEFAULT_LOCATION = THE_STRIP;
+const DEFAULT_LOCATION = STUDY;
 const DEFAULT_MONEY = 80377;

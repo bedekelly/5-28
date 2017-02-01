@@ -19,5 +19,4 @@ $(document).ready(() => {
 
     /* If it hasn't already updated, update the display now. */
     updateDisplay(g.player);
-    enterTrading();
 });

@@ -4,9 +4,10 @@
 
 
 class GameOption{
-    constructor(buttonText, onClick) {
+    constructor(buttonText, onClick, ...requirements) {
         this.buttonText = buttonText;
         this.onClick = onClick;
+        this.requirements = requirements;
     }
 }
 
@@ -16,6 +17,7 @@ class Quality {
         this.name = name;
     }
 }
+
 
 class QualityContainer {
     constructor(qualities) {
@@ -148,8 +150,6 @@ class Player extends QualityContainer {
      * @param i The Item we're adding.
      */
     addItem(i) {
-        console.log("Adding: ");
-        console.log(i);
         let stackFound = false;
         for (let stack of this.itemStacks) {
             if (stack.item.name === i.name) {
@@ -172,12 +172,36 @@ class Player extends QualityContainer {
      * @param stack
      */
     addItemStack(stack) {
-        console.log("adding stack");
+        console.log("Adding item stack");
+        console.log(stack);
         let num = stack.numberItems;
         let item = stack.item;
         for (let i=0; i<num; i++) {
             this.addItem(item);
         }
+    }
+
+    /**
+     * Remove an ItemStack from our inventory.
+     * @param stack The item and number to remove.
+     */
+    removeItemStack(stack) {
+        console.log("Removing stack");
+        console.log(stack);
+        let name = stack.item.name;
+        let number = stack.numberItems;
+        let found = false;
+        for (let s of this.itemStacks) {
+            console.log("trying:");
+            console.log(s);
+            console.log(name);
+            if (s.item.name === name) {
+                s.numberItems -= number;
+                found = true;
+                break;
+            }
+        }
+        if (!found) console.log("error: couldn't find itemstack to remove");
     }
 
     /**
@@ -196,7 +220,11 @@ class Player extends QualityContainer {
      */
     optionIsValid(o) {
         // Todo: option characteristics like location/items required.
-        return !!(!!(o) | !!(this));
+        if (!o || !this) return false;
+        for (let requirement of o.requirements) {
+            if (!requirement(g)) return false;
+        }
+        return true
     }
 }
 
@@ -240,7 +268,9 @@ class InventoryInterface {
         console.log("here");
         $(".money").text(g.player.money/100);
         currentInventoryItems().forEach(i => i.remove());
-        g.player.itemStacks.forEach(i => this.add(i));
+        g.player.itemStacks.forEach(i => {
+            if (i.numberItems > 0) this.add(i)
+        });
     }
 
     updateAll(animate) {

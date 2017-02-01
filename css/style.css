@@ -63,7 +63,7 @@ body, html {
 
 /* The ledger should be 80% of the screen height. */
 #ledger {
-    height: 80vh;
+    height: 83vh;
 
     /* Make the ledger scrollable. */
     position: relative;
@@ -81,8 +81,6 @@ body, html {
     overflow-y: scroll !important;
 }
 
-
-
 #traders-wrapper {
     z-index: 1;
     position: absolute;
@@ -91,7 +89,6 @@ body, html {
     top: 70px;
     overflow-y: scroll;
 }
-
 
 /* Hide the trading screen by default. */
 #trading {

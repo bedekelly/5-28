@@ -76,7 +76,12 @@ var MR_BAKER = new Trader("Mr. Baker", "Mr. Baker's Electric Supply Co.", "Is yo
 [],
 
 // Trade:
-[]);
+[{
+    price: "Genuine Goat's Antler",
+    priceMultipack: 1,
+    product: "Induction Coil",
+    productMultipack: 1
+}]);
 
 var OUTSIDE_APARTMENT = new Location("A Bustling Alleyway", "Framed by dirty, squat buildings, this alley is home to some of the worst\n    company in all of the East Tunnel.", "It's not all bad, though: the Solstice markets are opening, and there are\n    always bargains to be had. Potentially, bargains of questionable legality -\n    but what the Invigilators don't know can't hurt them.", [new GameOption("Return to your lodgings", function () {
     g.player.moveLocation(STUDY);
@@ -118,7 +123,9 @@ var STUDY = new Location("A Dismal Study", "Property in the Tunnels is all about
         ledger.add("You scavenge for more food in your meagre\n                    kitchen, but you can't come up with anything resembling a \n                    meal.");
         return;
     }
-    g.player.addItemStack(new ItemStack(3, new Item("Stale Breadcrumbs")));
+    var itemStack = new ItemStack(3, new Item("Stale Breadcrumbs"));
+    g.player.addItemStack(itemStack);
+    g.inventory.add(itemStack, true);
     ledger.add("You find some bits of stale bread at the back of a" + " kitchen cupboard. Not particularly appetising, but" + " it'll have to do for now.");
     location.removeQualityWithName("Has Stale Bread");
 })], [new Quality("Has Stale Bread")]);
@@ -129,18 +136,54 @@ var OUTSIDE_FACTORY = new Location("An Imposing Factory", "Ahead of you, a dark,
     g.player.moveLocation(OUTSIDE_APARTMENT);
     g.ledger.add("Moving away from the factory, you can see your\n                apartment through the clouds of smog. Street urchins brush past\n                you, darting towards their next target.");
 }), new GameOption("Walk west towards the station", function () {
-    g.player.moveLocation(STATION);
+    g.player.moveLocation(EASTSIDE_STATION);
     g.ledger.add("You walk briskly west, and a squat, unassuming\n                railway station appears to your right.");
 })], []);
 
-var STATION = new Location("An Unassuming Station", "The underground Railway is serviced by dozens of stations just like this\n     one, signposted Eastside. All in the same, grimy condition.", "Most workers use the Railway for their daily commute, to reach the Outer \n     Tunnels. It's rumoured that some tunnel-dwellers have their own, hidden \n     ways of traveling between tunnels - but rumours being what they are, who\n     can tell?", [new GameOption("Buy a Single Ticket", function () {
-    g.ledger.write("You spot an unassuming brass machine for \n                printing tickets. The only problem: you don't have the \n                cash for a single ticket, let alone some of the machine's more \n                extravagant offerings.");
+var EASTSIDE_STATION = new Location("An Unassuming Station", "The underground Railway is serviced by dozens of stations just like this\n     one, signposted Eastside. All in the same, grimy condition.", "Most workers use the Railway for their daily commute, to reach the Outer \n     Tunnels. It's rumoured that some tunnel-dwellers have their own, hidden \n     ways of traveling between tunnels - but rumours being what they are, who\n     can tell?", [new GameOption("Buy a Single Ticket", function () {
+    if (g.player.money < 500) {
+        g.ledger.write("You spot an unassuming brass machine for \n                printing tickets. The only problem: you don't have the \n                cash for a single ticket, let alone some of the machine's more \n                extravagant offerings.");
+        return;
+    }
+    g.ledger.write("You spot an unassuming brass machine for\n                printing tickets. With cash in hand you advance on the machine\n                and, with a bit of a kerfuffle, you coerce it into spitting out\n                a short Permit To Travel stub.");
+
+    g.player.money -= 500;
+    g.player.addItemStack(new ItemStack(1, new Item("Single Ticket")));
+    updateDisplayNoAnimate();
 }), new GameOption("Walk east to the Factory", function () {
     "use strict";
 
     g.ledger.write("As you walk away from the station, the factory's\n                silhouette looms out of the smog and mist ahead of you.");
     g.player.moveLocation(OUTSIDE_FACTORY);
+}), new GameOption("Take a train to Northside", function () {
+    "use strict";
+    //g.ledger.write(``)
+
+    g.player.moveLocation(NORTHSIDE_STATION);
+}, function (g) {
+    "use strict";
+
+    return g.inventory.contains("Single Ticket", 1);
 })], []);
+
+var NORTHSIDE_STATION = new Location("Northside", "Northside is another place", "It's pretty rad", [new GameOption("Enter Trading", function () {
+    "use strict";
+
+    enterTrading();
+    g.player.location.removeQualityWithName("Never traded");
+}, function (g) {
+    "use strict";
+
+    return g.player.location.hasQualityWithName("Never traded");
+}), new GameOption("Back to Eastside", function () {
+    "use strict";
+
+    g.player.moveLocation(EASTSIDE_STATION);
+}, function (g) {
+    "use strict";
+
+    return g.inventory.contains("Single Ticket", 1);
+})], [new Quality("Never traded")], [HONEST_PETE]);
 
 var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for all activities commercial and strictly\n    above-board in the East Tunnel. The air is warm from body heat, and from a \n    nearby stove.", "Once a wide boulevard intended for automobiles, it's been usurped by a\n    throng of market stalls in various states of disarray. State buildings block\n    the view to the railway - although it's still audible over the noise of the\n    crowd.", [new GameOption("Walk up to Eastside", function () {
     "use strict";
@@ -152,7 +195,7 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
     enterTrading();
 })], [], [MR_BAKER, HONEST_PETE]);
 
-var DEFAULT_LOCATION = THE_STRIP;
+var DEFAULT_LOCATION = STUDY;
 var DEFAULT_MONEY = 80377;
 
 //# sourceMappingURL=gameData-compiled.js.map

@@ -17,6 +17,12 @@ var GameOption = function GameOption(buttonText, onClick) {
 
     this.buttonText = buttonText;
     this.onClick = onClick;
+
+    for (var _len = arguments.length, requirements = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+        requirements[_key - 2] = arguments[_key];
+    }
+
+    this.requirements = requirements;
 };
 
 var Quality = function Quality(name) {
@@ -225,8 +231,6 @@ var Player = function (_QualityContainer2) {
     }, {
         key: "addItem",
         value: function addItem(i) {
-            console.log("Adding: ");
-            console.log(i);
             var stackFound = false;
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
@@ -274,12 +278,61 @@ var Player = function (_QualityContainer2) {
     }, {
         key: "addItemStack",
         value: function addItemStack(stack) {
-            console.log("adding stack");
+            console.log("Adding item stack");
+            console.log(stack);
             var num = stack.numberItems;
             var item = stack.item;
             for (var i = 0; i < num; i++) {
                 this.addItem(item);
             }
+        }
+
+        /**
+         * Remove an ItemStack from our inventory.
+         * @param stack The item and number to remove.
+         */
+
+    }, {
+        key: "removeItemStack",
+        value: function removeItemStack(stack) {
+            console.log("Removing stack");
+            console.log(stack);
+            var name = stack.item.name;
+            var number = stack.numberItems;
+            var found = false;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = this.itemStacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var s = _step3.value;
+
+                    console.log("trying:");
+                    console.log(s);
+                    console.log(name);
+                    if (s.item.name === name) {
+                        s.numberItems -= number;
+                        found = true;
+                        break;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+
+            if (!found) console.log("error: couldn't find itemstack to remove");
         }
 
         /**
@@ -304,7 +357,33 @@ var Player = function (_QualityContainer2) {
         key: "optionIsValid",
         value: function optionIsValid(o) {
             // Todo: option characteristics like location/items required.
-            return !!(!!o | !!this);
+            if (!o || !this) return false;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
+
+            try {
+                for (var _iterator4 = o.requirements[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var requirement = _step4.value;
+
+                    if (!requirement(g)) return false;
+                }
+            } catch (err) {
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
+                    }
+                } finally {
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
+                    }
+                }
+            }
+
+            return true;
         }
     }]);
 
@@ -363,7 +442,7 @@ var InventoryInterface = function () {
                 return i.remove();
             });
             g.player.itemStacks.forEach(function (i) {
-                return _this4.add(i);
+                if (i.numberItems > 0) _this4.add(i);
             });
         }
     }, {
@@ -398,29 +477,29 @@ var InventoryInterface = function () {
                 case "money":
                     return g.player.money >= productAmount;
                 default:
-                    var _iteratorNormalCompletion3 = true;
-                    var _didIteratorError3 = false;
-                    var _iteratorError3 = undefined;
+                    var _iteratorNormalCompletion5 = true;
+                    var _didIteratorError5 = false;
+                    var _iteratorError5 = undefined;
 
                     try {
-                        for (var _iterator3 = g.player.itemStacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                            var elem = _step3.value;
+                        for (var _iterator5 = g.player.itemStacks[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                            var elem = _step5.value;
 
                             if (elem.item.name === productName) {
                                 return elem.numberItems >= productAmount;
                             }
                         }
                     } catch (err) {
-                        _didIteratorError3 = true;
-                        _iteratorError3 = err;
+                        _didIteratorError5 = true;
+                        _iteratorError5 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                                _iterator3.return();
+                            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                                _iterator5.return();
                             }
                         } finally {
-                            if (_didIteratorError3) {
-                                throw _iteratorError3;
+                            if (_didIteratorError5) {
+                                throw _iteratorError5;
                             }
                         }
                     }
