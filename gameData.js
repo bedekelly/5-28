@@ -83,6 +83,7 @@ const HONEST_PETE = new Trader(
     ]
 );
 
+
 const MR_BAKER = new Trader(
     "Mr. Baker",
     "Mr. Baker's Electric Supply Co.",
@@ -184,6 +185,7 @@ const OUTSIDE_APARTMENT = new Location(
     []  // Qualities
 );
 
+
 const STUDY = new Location(
     "A Dismal Study",
     `Property in the Tunnels is all about one thing: "Location, Location, 
@@ -243,6 +245,7 @@ drainpipe to the street outside. Never hurts to make an appearance, eh?`);
     ]
 );
 
+
 const OUTSIDE_FACTORY = new Location(
     "An Imposing Factory",
     `Ahead of you, a dark, rectangular silhouette of the Factory blocks out the 
@@ -274,6 +277,7 @@ const OUTSIDE_FACTORY = new Location(
         )
     ], []
 );
+
 
 const EASTSIDE_STATION = new Location(
     "An Unassuming Station",
@@ -316,8 +320,9 @@ const EASTSIDE_STATION = new Location(
         new GameOption(
             "Take a train to Northside", () => {
                 "use strict";
-                //g.ledger.write(``)
+                g.ledger.write(`You hop on the train.`)
                 g.player.moveLocation(NORTHSIDE_STATION);
+                g.player.removeItem("Single Ticket");
             },
             (g) => {
                 "use strict";
@@ -326,6 +331,7 @@ const EASTSIDE_STATION = new Location(
         )
     ], []
 );
+
 
 const NORTHSIDE_STATION = new Location(
     "Northside",
@@ -357,6 +363,7 @@ const NORTHSIDE_STATION = new Location(
         HONEST_PETE
     ]
 );
+
 
 const THE_STRIP = new Location(
     "The Strip",
@@ -390,7 +397,6 @@ alleyway, half-hidden by a coal-seller's stall.`);
     [],
     [MR_BAKER, HONEST_PETE]
 );
-
 
 
 const DEFAULT_LOCATION = STUDY;

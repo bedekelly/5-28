@@ -163,9 +163,10 @@ var EASTSIDE_STATION = new Location("An Unassuming Station", "The underground Ra
     g.player.moveLocation(OUTSIDE_FACTORY);
 }), new GameOption("Take a train to Northside", function () {
     "use strict";
-    //g.ledger.write(``)
 
+    g.ledger.write("You hop on the train.");
     g.player.moveLocation(NORTHSIDE_STATION);
+    g.player.removeItem("Single Ticket");
 }, function (g) {
     "use strict";
 
