@@ -95,11 +95,17 @@ var OUTSIDE_APARTMENT = new Location("A Bustling Alleyway", "Framed by dirty, sq
     "use strict";
 
     if (g.player.hasQualityWithName("tried to fire blunderbuss")) {
-        g.ledger.add("You think, perhaps, this might not be the \n                    best course of action. At least, not where the Invigilators\n                    could see you.");
+        g.ledger.add("You take aim into the sky and pull the cold metal trigger.\n                         The rusted mechanism clicks and the gunpowder, somehow\n                         kept dry, explodes in a brief dirty flame out of the muzzle.\n                         As the deafening blast fades from your ears, you think it\n                         might be an idea to disappear into the crowd.\n                         ");
+        g.player.addQuality(new Quality("fired blunderbuss"));
+        updateDisplayNoAnimate();
         return;
     }
     g.ledger.add("A firm hand grips your shoulder as you reach for your\n                    weapon. \"I wouldn't do that if I were you, laddie.\", a gruff\n                    voice mutters in your ear. You look around, startled, but\n                    they've disappeared into the crowd. Just as well, really.");
     g.player.addQuality(new Quality("tried to fire blunderbuss"));
+}, function (g) {
+    "use strict";
+
+    return !g.player.hasQualityWithName("fired blunderbuss");
 }), new GameOption("Walk down The Strip", function () {
     "use strict";
 

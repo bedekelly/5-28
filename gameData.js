@@ -148,9 +148,15 @@ const OUTSIDE_APARTMENT = new Location(
             () => {
                 "use strict";
                 if (g.player.hasQualityWithName("tried to fire blunderbuss")) {
-                    g.ledger.add(`You think, perhaps, this might not be the 
-                    best course of action. At least, not where the Invigilators
-                    could see you.`);
+                    g.ledger.add(
+                        `You take aim into the sky and pull the cold metal trigger.
+                         The rusted mechanism clicks and the gunpowder, somehow
+                         kept dry, explodes in a brief dirty flame out of the muzzle.
+                         As the deafening blast fades from your ears, you think it
+                         might be an idea to disappear into the crowd.
+                         `);
+                    g.player.addQuality(new Quality("fired blunderbuss"));
+                    updateDisplayNoAnimate();
                     return;
                 }
                 g.ledger.add(
@@ -160,6 +166,9 @@ const OUTSIDE_APARTMENT = new Location(
                     they've disappeared into the crowd. Just as well, really.`
                 );
                 g.player.addQuality(new Quality("tried to fire blunderbuss"));
+            }, (g) => {
+                "use strict";
+                return !g.player.hasQualityWithName("fired blunderbuss")
             }
         ),
         new GameOption(
