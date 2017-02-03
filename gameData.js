@@ -268,11 +268,23 @@ const OUTSIDE_FACTORY = new Location(
             }
         ),
         new GameOption(
-            "Walk west towards the station",
+            "Walk north-west towards the station",
             () => {
                 g.player.moveLocation(EASTSIDE_STATION);
                 g.ledger.add(`You walk briskly west, and a squat, unassuming
                 railway station appears to your right.`)
+            }
+        ),
+        new GameOption(
+            "Walk west across the bridge",
+            () => {
+                "use strict";
+                g.ledger.write(
+                    "Walking across the bridge, a train rattles underneath," +
+                    " filled with the unwashed faces of miners and scraping on" +
+                    " the tracks as it slows to enter the station."
+                );
+                g.player.moveLocation(WEST_OF_TRACKS);
             }
         )
     ], []
@@ -350,7 +362,8 @@ const NORTHSIDE_STATION = new Location(
         ),
         new GameOption("Back to Eastside", () => {
             "use strict";
-            g.player.moveLocation(EASTSIDE_STATION)
+            g.player.moveLocation(EASTSIDE_STATION);
+            g.player.removeItemWithName("Single Ticket");
         }, (g) => {
             "use strict";
             return g.inventory.contains("Single Ticket", 1);
@@ -396,6 +409,28 @@ alleyway, half-hidden by a coal-seller's stall.`);
     ],
     [],
     [MR_BAKER, HONEST_PETE]
+);
+
+
+const WEST_OF_TRACKS = new Location(
+    "West of Tracks",
+    `Here, the tunnel roof draws uncomfortably close overhead. The sheer wall, 
+    stained dark, feels moist to the touch.`,
+    `Ahead, the Invigilators have set up a barrier `,
+    [
+        new GameOption("Walk across the bridge", () => {
+            "use strict";
+            g.ledger.write("You stroll across to the east side of the tracks, " +
+                "hoping beyond hope that you don't cross with any Invigilators.");
+            g.player.moveLocation(OUTSIDE_FACTORY);
+        })
+    ],
+    [
+        // Qualities
+    ],
+    [
+        // Traders
+    ]
 );
 
 

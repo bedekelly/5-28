@@ -141,9 +141,14 @@ var OUTSIDE_FACTORY = new Location("An Imposing Factory", "Ahead of you, a dark,
 
     g.player.moveLocation(OUTSIDE_APARTMENT);
     g.ledger.add("Moving away from the factory, you can see your\n                apartment through the clouds of smog. Street urchins brush past\n                you, darting towards their next target.");
-}), new GameOption("Walk west towards the station", function () {
+}), new GameOption("Walk north-west towards the station", function () {
     g.player.moveLocation(EASTSIDE_STATION);
     g.ledger.add("You walk briskly west, and a squat, unassuming\n                railway station appears to your right.");
+}), new GameOption("Walk west across the bridge", function () {
+    "use strict";
+
+    g.ledger.write("Walking across the bridge, a train rattles underneath," + " filled with the unwashed faces of miners and scraping on" + " the tracks as it slows to enter the station.");
+    g.player.moveLocation(WEST_OF_TRACKS);
 })], []);
 
 var EASTSIDE_STATION = new Location("An Unassuming Station", "The underground Railway is serviced by dozens of stations just like this\n     one, signposted Eastside. All in the same, grimy condition.", "Most workers use the Railway for their daily commute, to reach the Outer \n     Tunnels. It's rumoured that some tunnel-dwellers have their own, hidden \n     ways of traveling between tunnels - but rumours being what they are, who\n     can tell?", [new GameOption("Buy a Single Ticket", function () {
@@ -186,6 +191,7 @@ var NORTHSIDE_STATION = new Location("Northside", "Northside is another place", 
     "use strict";
 
     g.player.moveLocation(EASTSIDE_STATION);
+    g.player.removeItemWithName("Single Ticket");
 }, function (g) {
     "use strict";
 
@@ -201,6 +207,17 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
     g.ledger.write("You start peeling your eyes for a bargain.\n                The markets can yield some rather curious and rare items...\n                for a price, of course.");
     enterTrading();
 })], [], [MR_BAKER, HONEST_PETE]);
+
+var WEST_OF_TRACKS = new Location("West of Tracks", "Here, the tunnel roof draws uncomfortably close overhead. The sheer wall, \n    stained dark, feels moist to the touch.", "Ahead, the Invigilators have set up a barrier ", [new GameOption("Walk across the bridge", function () {
+    "use strict";
+
+    g.ledger.write("You stroll across to the east side of the tracks, " + "hoping beyond hope that you don't cross with any Invigilators.");
+    g.player.moveLocation(OUTSIDE_FACTORY);
+})], [
+    // Qualities
+], [
+    // Traders
+]);
 
 var DEFAULT_LOCATION = STUDY;
 var DEFAULT_MONEY = 80377;

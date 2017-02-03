@@ -204,6 +204,18 @@ class Player extends QualityContainer {
         if (!found) console.log("error: couldn't find itemstack to remove");
     }
 
+    removeItemWithName(itemName) {
+        this.removeItemStack(
+            new ItemStack(1, new Item(itemName))
+        )
+    }
+
+    removeItem(item) {
+        this.removeItemStack(
+            new ItemStack(1, item)
+        );
+    }
+
     /**
      * Wrapper method to move location and update the screen.
      * @param location The new location we're moving to.

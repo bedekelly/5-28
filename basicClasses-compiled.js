@@ -334,6 +334,16 @@ var Player = function (_QualityContainer2) {
 
             if (!found) console.log("error: couldn't find itemstack to remove");
         }
+    }, {
+        key: "removeItemWithName",
+        value: function removeItemWithName(itemName) {
+            this.removeItemStack(new ItemStack(1, new Item(itemName)));
+        }
+    }, {
+        key: "removeItem",
+        value: function removeItem(item) {
+            this.removeItemStack(new ItemStack(1, item));
+        }
 
         /**
          * Wrapper method to move location and update the screen.
