@@ -278,8 +278,6 @@ var Player = function (_QualityContainer2) {
     }, {
         key: "addItemStack",
         value: function addItemStack(stack) {
-            console.log("Adding item stack");
-            console.log(stack);
             var num = stack.numberItems;
             var item = stack.item;
             for (var i = 0; i < num; i++) {
@@ -295,8 +293,6 @@ var Player = function (_QualityContainer2) {
     }, {
         key: "removeItemStack",
         value: function removeItemStack(stack) {
-            console.log("Removing stack");
-            console.log(stack);
             var name = stack.item.name;
             var number = stack.numberItems;
             var found = false;
@@ -308,9 +304,6 @@ var Player = function (_QualityContainer2) {
                 for (var _iterator3 = this.itemStacks[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                     var s = _step3.value;
 
-                    console.log("trying:");
-                    console.log(s);
-                    console.log(name);
                     if (s.item.name === name) {
                         s.numberItems -= number;
                         found = true;
@@ -446,7 +439,6 @@ var InventoryInterface = function () {
         value: function updateAllNoAnimate() {
             var _this4 = this;
 
-            console.log("here");
             $(".money").text(g.player.money / 100);
             currentInventoryItems().forEach(function (i) {
                 return i.remove();

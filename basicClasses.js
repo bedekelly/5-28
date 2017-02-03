@@ -172,8 +172,6 @@ class Player extends QualityContainer {
      * @param stack
      */
     addItemStack(stack) {
-        console.log("Adding item stack");
-        console.log(stack);
         let num = stack.numberItems;
         let item = stack.item;
         for (let i=0; i<num; i++) {
@@ -186,15 +184,10 @@ class Player extends QualityContainer {
      * @param stack The item and number to remove.
      */
     removeItemStack(stack) {
-        console.log("Removing stack");
-        console.log(stack);
         let name = stack.item.name;
         let number = stack.numberItems;
         let found = false;
         for (let s of this.itemStacks) {
-            console.log("trying:");
-            console.log(s);
-            console.log(name);
             if (s.item.name === name) {
                 s.numberItems -= number;
                 found = true;
@@ -277,7 +270,6 @@ class InventoryInterface {
     }
 
     updateAllNoAnimate() {
-        console.log("here");
         $(".money").text(g.player.money/100);
         currentInventoryItems().forEach(i => i.remove());
         g.player.itemStacks.forEach(i => {
