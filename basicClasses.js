@@ -59,6 +59,12 @@ class QualityContainer {
         }
     }
 
+    getQualityWithName(name) {
+        for (let q of this.qualities)
+            if (q.name == name) return q;
+        console.error(`Couldn't find quality with name ${name}`);
+    }
+
     addQuality(quality) {
         this.qualities.add(quality);
     }
