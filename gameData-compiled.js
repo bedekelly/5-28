@@ -32,33 +32,42 @@ var HONEST_PETE = new Trader("Honest Pete", "Pete's Perfectly Legal Goods", "Shh
 
 // Buy:
 [{
-    product: "Chamois Leather Cloth",
+    product: new Item("Chamois Leather Cloth"),
     price: 43200,
     quantityLeft: 3,
     multipack: 5
 }, {
-    product: "Genuine Goat's Antler",
+    product: new Item("Genuine Goat's Antler"),
     price: 690,
     quantityLeft: 1,
+    multipack: 1
+}, {
+    "product": new Item("Whispered Hint", [new GameOption("Use Whispered Hint", function () {
+        g.player.removeItemWithName("Whispered Hint");
+        useHint();
+        updateDisplayNoAnimate();
+    })]),
+    price: 1000,
+    quantityLeft: 3,
     multipack: 1
 }],
 
 // Sell:
 [{
-    product: "Rusted Blunderbuss",
+    product: new Item("Rusted Blunderbuss"),
     multipack: 1,
     price: 330
 }, {
-    product: "Mysterious Noise",
+    product: new Item("Mysterious Noise"),
     multipack: 1,
     price: 288
 }],
 
 // Trade:
 [{
-    product: "Forged Season Rail Ticket",
+    product: new Item("Forged Season Rail Ticket"),
     productMultipack: 1,
-    price: "Scrap of Arcane Knowledge",
+    price: new Item("Scrap of Arcane Knowledge"),
     priceMultipack: 5
 }]);
 
@@ -66,7 +75,7 @@ var MR_BAKER = new Trader("Mr. Baker", "Mr. Baker's Electric Supply Co.", "Is yo
 
 // Buy:
 [{
-    product: "Pieces of Scrap Metal",
+    product: new Item("Pieces of Scrap Metal"),
     price: 400,
     quantityLeft: 10,
     multipack: 15
@@ -77,11 +86,26 @@ var MR_BAKER = new Trader("Mr. Baker", "Mr. Baker's Electric Supply Co.", "Is yo
 
 // Trade:
 [{
-    price: "Genuine Goat's Antler",
+    price: new Item("Genuine Goat's Antler"),
     priceMultipack: 1,
-    product: "Induction Coil",
+    product: new Item("Induction Coil"),
     productMultipack: 1
 }]);
+
+var ENGLEBERT = new Trader("Englebert Humperdink", "Englebert's Private Supply", "Hmm? Oh, it's you-- speak quietly, they have ears everywhere.", [{
+    product: new Item("Smuggler's Map", [], [new Quality("Knows about the smuggler's routes")], []),
+    price: 2000,
+    quantityLeft: 1,
+    multipack: 1
+}], [], [], function (g) {
+    "use strict";
+
+    return g.player.hasQualityWithName("Knows about Englebert");
+}, function (g) {
+    "use strict";
+
+    return !g.player.hasQualityWithName("Knows about ");
+});
 
 var OUTSIDE_APARTMENT = new Location("A Bustling Alleyway", "Framed by dirty, squat buildings, this alley is home to some of the worst\n    company in all of the East Tunnel.", "It's not all bad, though: the Solstice markets are opening, and there are\n    always bargains to be had. Potentially, bargains of questionable legality -\n    but what the Invigilators don't know can't hurt them.", [new GameOption("Return to your lodgings", function () {
     g.player.moveLocation(STUDY);
@@ -118,7 +142,16 @@ var OUTSIDE_APARTMENT = new Location("A Bustling Alleyway", "Framed by dirty, sq
 var STUDY = new Location("A Dismal Study", "Property in the Tunnels is all about one thing: \"Location, Location, \n     Location!\" That's why these rooms were so cheap.\n     Not that you're complaining, of course.", "A battered armchair sits in the\n     corner, crammed next to to a low dresser. Dimly lit by a gas lamp, the\n     shadows in the room flickers, forming haphazard shapes on the dirty walls.\n    ", [new GameOption("Relax in your study", function () {
     return g.ledger.add("You spend a few hours wallowing in the study's" + " frankly disgraceful messiness. It's the done thing, around" + " these parts -- or so you tell yourself.");
 }), new GameOption("Read a book", function () {
-    return g.ledger.add("It's rare that you get a chance to enjoy a good" + " book.  You get through a few chapters of dense" + " Ancient Greek text before you realise that" + " it's largely because of the lack of good" + " books down here.");
+    var location = g.player.location;
+    g.ledger.add("It's rare that you get a chance to enjoy a good" + " book.  You get through a few chapters of dense" + " Ancient Greek text before you realise that" + " it's largely because of the lack of good" + " books down here.");
+    var item = new Item("Scrap of Arcane Knowledge");
+    var itemStack = new ItemStack(1, item);
+    g.player.addItem(item);
+    g.player.location.addQuality(new Quality("Has read book"));
+    g.inventory.add(itemStack);
+    removeOptionCardWithName("Read a book");
+}, function (g) {
+    return !g.player.location.hasQualityWithName("Has read book");
 }), new GameOption("Roam the streets", function () {
     g.player.moveLocation(OUTSIDE_APARTMENT);
     g.ledger.add("You slip through your window and slide down the\ndrainpipe to the street outside. Never hurts to make an appearance, eh?");
@@ -144,7 +177,7 @@ var OUTSIDE_FACTORY = new Location("An Imposing Factory", "Ahead of you, a dark,
 }), new GameOption("Walk north-west towards the station", function () {
     g.player.moveLocation(EASTSIDE_STATION);
     g.ledger.add("You walk briskly west, and a squat, unassuming\n                railway station appears to your right.");
-}), new GameOption("Walk west across the bridge", function () {
+}), new GameOption("Walk west across the tracks", function () {
     "use strict";
 
     g.ledger.write("Walking across the bridge, a train rattles underneath," + " filled with the unwashed faces of miners and scraping on" + " the tracks as it slows to enter the station.");
@@ -175,7 +208,7 @@ var EASTSIDE_STATION = new Location("An Unassuming Station", "The underground Ra
 }, function (g) {
     "use strict";
 
-    return g.inventory.contains("Single Ticket", 1);
+    return g.player.hasItemWithName("Single Ticket", 1);
 })], []);
 
 var NORTHSIDE_STATION = new Location("Northside", "Northside is another place", "It's pretty rad", [new GameOption("Enter Trading", function () {
@@ -195,7 +228,7 @@ var NORTHSIDE_STATION = new Location("Northside", "Northside is another place", 
 }, function (g) {
     "use strict";
 
-    return g.inventory.contains("Single Ticket", 1);
+    return g.player.hasItemWithName("Single Ticket", 1);
 })], [new Quality("Never traded")], [HONEST_PETE]);
 
 var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for all activities commercial and strictly\n    above-board in the East Tunnel. The air is warm from body heat, and from a \n    nearby stove.", "Once a wide boulevard intended for automobiles, it's been usurped by a\n    throng of market stalls in various states of disarray. State buildings block\n    the view to the railway - although it's still audible over the noise of the\n    crowd.", [new GameOption("Walk up to Eastside", function () {
@@ -203,9 +236,6 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
 
     g.ledger.write("You move north, off the strip and into the grimy\nalleyway, half-hidden by a coal-seller's stall.");
     g.player.moveLocation(OUTSIDE_APARTMENT);
-}), new GameOption("Trade in the market", function () {
-    g.ledger.write("You start peeling your eyes for a bargain.\n                The markets can yield some rather curious and rare items...\n                for a price, of course.");
-    enterTrading();
 })], [], [MR_BAKER, HONEST_PETE]);
 
 var WEST_OF_TRACKS = new Location("West of Tracks", "Here, the tunnel roof draws uncomfortably close overhead. The sheer wall, \n    stained dark, feels moist to the touch.", "Ahead, the Invigilators have set up a barrier ", [new GameOption("Walk across the bridge", function () {
@@ -215,11 +245,13 @@ var WEST_OF_TRACKS = new Location("West of Tracks", "Here, the tunnel roof draws
     g.player.moveLocation(OUTSIDE_FACTORY);
 })], [
     // Qualities
-], [
-    // Traders
-]);
+], [ENGLEBERT]);
 
 var DEFAULT_LOCATION = STUDY;
-var DEFAULT_MONEY = 80377;
+var DEFAULT_MONEY = 1034;
+var DEFAULT_HINTS = [function (g) {
+    g.ledger.write("They say that, west of the tracks, a smuggler named Englebert is selling\n    his most prized possession. Look for the man with the smoky glasses and\n    overcoat.");
+    g.player.addQuality(new Quality("Knows about Englebert"));
+}];
 
 //# sourceMappingURL=gameData-compiled.js.map

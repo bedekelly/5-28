@@ -31,7 +31,7 @@ function numberToString(n) {
 
 /** Load the save state from LocalStorage or similar. */
 function getSaveState() {
-    return new Player("Bede", DEFAULT_LOCATION, DEFAULT_MONEY);
+    return new Player("Bede", DEFAULT_LOCATION, DEFAULT_MONEY, DEFAULT_HINTS);
 }
 
 
@@ -52,6 +52,20 @@ function addOptionCard(option) {
     let card = $(`<button class="option-card">${option.buttonText}</button>`);
     card.click(option.onClick);
     $("#options").append(card);
+}
+
+
+function removeOptionCardWithName(name, noAnimate) {
+    "use strict";
+    let optionCards = currentOptionCards();
+    for (let x of optionCards) {
+        if (x.innerHTML == name) {
+            if (!noAnimate) {
+                $(x).fadeOut(500, () => x.remove());
+            } else x.remove();
+            break;
+        }
+    }
 }
 
 
@@ -153,7 +167,7 @@ function priceFromPennies(n) {
 function failToBuy(product) {
     "use strict";
     g.ledger.write(
-        `Looks like you don't have enough to buy the ${product.product}.`
+        `Looks like you don't have enough to buy the ${product.product.name}.`
     );
 }
 
@@ -161,40 +175,44 @@ function failToBuy(product) {
 function failToSell(product) {
     "use strict";
     g.ledger.write(
-        `Looks like you don't have the ${product.product} to sell.`
+        `Looks like you don't have the ${product.product.name} to sell.`
     )
 }
 
 
-function tryToBuy(product) {
+function tryToBuy(saleInfo) {
     "use strict";
-    if (g.inventory.contains("money", product.price)) {
-        g.inventory.removeMoney(product.price);
-        g.player.addItemStack(
-            new ItemStack(
-                product.multipack,
-                new Item(product.product)
-            )
-        )
+    if (g.player.hasMoney(saleInfo.price)) {
+        g.player.removeMoney(saleInfo.price);
+        let product = new ItemStack(
+            saleInfo.multipack,
+            saleInfo.product
+        );
+        g.ledger.write(
+            `You buy ${product.toString()} for 
+             ${priceFromPennies(saleInfo.price)}`
+        );
+        g.player.addItemStack(product);
+
     } else {
-        failToBuy(product);
+        failToBuy(saleInfo);
     }
 }
 
 
-function tryToSell(product) {
+function tryToSell(saleInfo) {
     "use strict";
-    console.log(product);
-    if (g.inventory.contains(product.product, product.multipack)) {
-        g.player.removeItemStack(
-            new ItemStack(
-                product.multipack, new Item(product.product)
-            )
+    if (g.player.hasItemWithName(saleInfo.product.name, saleInfo.multipack)) {
+        let product = new ItemStack(
+            saleInfo.multipack, saleInfo.product
         );
-        g.inventory.removeMoney(-product.price);
+        g.player.removeItemStack(product);
+        g.player.addMoney(saleInfo.price);
+        g.ledger.write(`You sell ${product.toString()} for
+                        ${priceFromPennies(saleInfo.price)}`);
         g.inventory.updateAllNoAnimate();
     } else {
-        failToSell(product);
+        failToSell(saleInfo);
     }
 }
 
@@ -202,28 +220,27 @@ function tryToSell(product) {
 function failToTrade(tradeInfo) {
     "use strict";
     g.ledger.write(
-        `Looks like you don't have the ${tradeInfo.price} to trade.`
+        `Looks like you don't have the ${tradeInfo.price.name} to trade.`
     )
 }
 
 
 function tryToTrade(tradeInfo) {
     "use strict";
-    console.log(tradeInfo);
-    if (g.inventory.contains(tradeInfo.price, tradeInfo.priceMultipack)) {
-        g.player.removeItemStack(
-            new ItemStack(
-                tradeInfo.priceMultipack,
-                new Item(tradeInfo.price
-                )
-            )
+    let price = new ItemStack(
+        tradeInfo.priceMultipack,
+        tradeInfo.price
+    );
+    if (g.player.hasItemStack(price)) {
+        let product = new ItemStack(
+            tradeInfo.productMultipack,
+            tradeInfo.product
         );
-        g.player.addItemStack(
-            new ItemStack(
-                tradeInfo.productMultipack,
-                new Item(tradeInfo.product)
-            )
-        );
+        g.player.removeItemStack(price);
+        g.player.addItemStack(product);
+
+        g.ledger.write(`You trade ${price.toString()} in exchange for ${product.toString()}`);
+
         g.inventory.updateAllNoAnimate();
     } else {
         failToTrade(tradeInfo);
@@ -254,7 +271,7 @@ function addTrader(traderInfo) {
         for (let productToSell of traderInfo.willSell) {
             let tr = $(`<tr></tr>`);
             let productName = $(`<td class="product-name"></td>`);
-            productName.text(`${productToSell.multipack} x ${productToSell.product}`);
+            productName.text(`${productToSell.multipack} x ${productToSell.product.name}`);
             tr.append(productName);
 
             let button = $(`<td><a class="buy-button" href="#">-></a></td>`);
@@ -294,7 +311,7 @@ function addTrader(traderInfo) {
             tr.append(button);
 
             let productName = $(`<td class="product-name"></td>`);
-            productName.text(`${productToBuy.multipack} x ${productToBuy.product}`);
+            productName.text(`${productToBuy.multipack} x ${productToBuy.product.name}`);
             tr.append(productName);
 
             tbody.append(tr);
@@ -314,7 +331,7 @@ function addTrader(traderInfo) {
             let tr = $(`<tr></tr>`);
 
             let product = $(`<td class="product-price"></td>`);
-            product.html(`${tradeInfo.productMultipack} x ${tradeInfo.product}`);
+            product.html(`${tradeInfo.productMultipack} x ${tradeInfo.product.name}`);
             tr.append(product);
 
             let button = $(`<td><a class="trade-button" href="#"><-></a></td>`);
@@ -324,7 +341,7 @@ function addTrader(traderInfo) {
             tr.append(button);
 
             let price = $(`<td class="product-name"></td>`);
-            price.html(`${tradeInfo.priceMultipack} x ${tradeInfo.price}`);
+            price.html(`${tradeInfo.priceMultipack} x ${tradeInfo.price.name}`);
             tr.append(price);
 
             tbody.append(tr);
@@ -346,7 +363,7 @@ function loadTraders() {
     let traders = $(".traders");
     traders.html("");
     for (let trader of g.player.location.traders) {
-        addTrader(trader);
+        if (trader.isVisible()) addTrader(trader);
     }
 }
 
@@ -358,7 +375,7 @@ function loadTrading() {
     "use strict";
     let location = g.player.location.name;
     let backButton = `<span onclick="exitTrading();">Exit</span>`;
-    let html = `Trade: ${location} | ${backButton}`;
+    let html = `${location} | ${backButton}`;
     $(".trading-title").html(html);
     loadTraders();
 }
@@ -384,4 +401,21 @@ function exitTrading() {
         updateDisplayNoAnimate();
         $("#main-content").fadeIn(500);
     });
+}
+
+
+function randomPop(set) {
+    "use strict";
+    let array = Array.from(set);
+    let randNo = Math.floor(Math.random() * array.length);
+    let elem = array[randNo];
+    set.delete(elem);
+    return elem;
+}
+
+
+function useHint() {
+    "use strict";
+    let hint = randomPop(g.player.hints);
+    hint(g);
 }

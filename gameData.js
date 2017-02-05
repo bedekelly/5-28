@@ -45,28 +45,46 @@ const HONEST_PETE = new Trader(
     // Buy:
     [
         {
-            product: `Chamois Leather Cloth`,
+            product: new Item(`Chamois Leather Cloth`),
             price: 43200,
             quantityLeft: 3,
             multipack: 5
         },
         {
-            product: `Genuine Goat's Antler`,
+            product: new Item(`Genuine Goat's Antler`),
             price: 690,
             quantityLeft: 1,
             multipack: 1,
+        },
+        {
+            "product": new Item(
+                "Whispered Hint",
+                [
+                    new GameOption(
+                        "Use Whispered Hint",
+                        () => {
+                            g.player.removeItemWithName("Whispered Hint");
+                            useHint();
+                            updateDisplayNoAnimate();
+                        },
+                    )
+                ]
+            ),
+            price: 1000,
+            quantityLeft: 3,
+            multipack: 1
         }
     ],
 
     // Sell:
     [
         {
-            product: `Rusted Blunderbuss`,
+            product: new Item(`Rusted Blunderbuss`),
             multipack: 1,
             price: 330
         },
         {
-            product: `Mysterious Noise`,
+            product: new Item(`Mysterious Noise`),
             multipack: 1,
             price: 288,
         }
@@ -75,9 +93,9 @@ const HONEST_PETE = new Trader(
     // Trade:
     [
         {
-            product: `Forged Season Rail Ticket`,
+            product: new Item(`Forged Season Rail Ticket`),
             productMultipack: 1,
-            price: `Scrap of Arcane Knowledge`,
+            price: new Item(`Scrap of Arcane Knowledge`),
             priceMultipack: 5,
         }
     ]
@@ -94,7 +112,7 @@ const MR_BAKER = new Trader(
     // Buy:
     [
         {
-            product: `Pieces of Scrap Metal`,
+            product: new Item(`Pieces of Scrap Metal`),
             price: 400,
             quantityLeft: 10,
             multipack: 15
@@ -107,12 +125,39 @@ const MR_BAKER = new Trader(
     // Trade:
     [
         {
-            price: `Genuine Goat's Antler`,
+            price: new Item(`Genuine Goat's Antler`),
             priceMultipack: 1,
-            product: `Induction Coil`,
+            product: new Item(`Induction Coil`),
             productMultipack: 1
         }
     ]
+);
+
+
+const ENGLEBERT = new Trader(
+    "Englebert Humperdink",
+    "Englebert's Private Supply",
+    `Hmm? Oh, it's you-- speak quietly, they have ears everywhere.`,
+    [
+        {
+            product: new Item(`Smuggler's Map`, [], [
+                new Quality("Knows about the smuggler's routes")
+            ], []),
+            price: 2000,
+            quantityLeft: 1,
+            multipack: 1
+        }
+    ],
+    [],
+    [],
+    (g) => {
+        "use strict";
+        return g.player.hasQualityWithName("Knows about Englebert");
+    },
+    (g) => {
+        "use strict";
+        return !g.player.hasQualityWithName("Knows about ")
+    }
 );
 
 
@@ -205,11 +250,26 @@ const STUDY = new Location(
         ),
         new GameOption(
             "Read a book",
-            () => g.ledger.add("It's rare that you get a chance to enjoy a good"
-                + " book.  You get through a few chapters of dense"
-                + " Ancient Greek text before you realise that"
-                + " it's largely because of the lack of good"
-                + " books down here.")
+            () => {
+                let location = g.player.location;
+                g.ledger.add("It's rare that you get a chance to enjoy a good"
+                    + " book.  You get through a few chapters of dense"
+                    + " Ancient Greek text before you realise that"
+                    + " it's largely because of the lack of good"
+                    + " books down here.");
+                let item = new Item("Scrap of Arcane Knowledge");
+                let itemStack = new ItemStack(1, item);
+                g.player.addItem(item);
+                g.player.location.addQuality(
+                    new Quality("Has read book")
+                );
+                g.inventory.add(itemStack);
+                removeOptionCardWithName("Read a book");
+
+            },
+            (g) => {
+                return !g.player.location.hasQualityWithName("Has read book")
+            }
         ),
         new GameOption(
             "Roam the streets", () => {
@@ -276,7 +336,7 @@ const OUTSIDE_FACTORY = new Location(
             }
         ),
         new GameOption(
-            "Walk west across the bridge",
+            "Walk west across the tracks",
             () => {
                 "use strict";
                 g.ledger.write(
@@ -332,13 +392,13 @@ const EASTSIDE_STATION = new Location(
         new GameOption(
             "Take a train to Northside", () => {
                 "use strict";
-                g.ledger.write(`You hop on the train.`)
+                g.ledger.write(`You hop on the train.`);
                 g.player.moveLocation(NORTHSIDE_STATION);
                 g.player.removeItem("Single Ticket");
             },
             (g) => {
                 "use strict";
-                return g.inventory.contains("Single Ticket", 1);
+                return g.player.hasItemWithName("Single Ticket", 1);
             }
         )
     ], []
@@ -366,7 +426,7 @@ const NORTHSIDE_STATION = new Location(
             g.player.removeItemWithName("Single Ticket");
         }, (g) => {
             "use strict";
-            return g.inventory.contains("Single Ticket", 1);
+            return g.player.hasItemWithName("Single Ticket", 1);
         })
     ],
     [
@@ -396,15 +456,6 @@ const THE_STRIP = new Location(
 alleyway, half-hidden by a coal-seller's stall.`);
                 g.player.moveLocation(OUTSIDE_APARTMENT);
             }
-        ),
-        new GameOption(
-            "Trade in the market",
-            () => {
-                g.ledger.write(`You start peeling your eyes for a bargain.
-                The markets can yield some rather curious and rare items...
-                for a price, of course.`);
-                enterTrading();
-            }
         )
     ],
     [],
@@ -429,10 +480,19 @@ const WEST_OF_TRACKS = new Location(
         // Qualities
     ],
     [
-        // Traders
+        ENGLEBERT
     ]
 );
 
 
 const DEFAULT_LOCATION = STUDY;
-const DEFAULT_MONEY = 80377;
+const DEFAULT_MONEY = 1034;
+const DEFAULT_HINTS = [
+    (g) => {
+        g.ledger.write(`They say that, west of the tracks, a smuggler named Englebert is selling
+    his most prized possession. Look for the man with the smoky glasses and
+    overcoat.`
+        );
+        g.player.addQuality(new Quality("Knows about Englebert"))
+    }
+];

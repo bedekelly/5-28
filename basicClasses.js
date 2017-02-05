@@ -9,6 +9,19 @@ class GameOption{
         this.onClick = onClick;
         this.requirements = requirements;
     }
+
+    /**
+     * Is an option valid, given the current state of the game?
+     * @param o The option to check.
+     * @returns {boolean}
+     */
+    isValid() {
+        // Todo: option characteristics like location/items required.
+        for (let requirement of this.requirements) {
+            if (!requirement(g)) return false;
+        }
+        return true;
+    }
 }
 
 
@@ -21,7 +34,7 @@ class Quality {
 
 class QualityContainer {
     constructor(qualities) {
-        this.qualities = qualities;
+        this.qualities = new Set(qualities || []);
     }
 
     hasQualityWithName(name) {
@@ -59,15 +72,17 @@ class Location extends QualityContainer{
         this.descA = descA;
         this.descB = descB;
         this.defaultOptions = defaultOptions;
-        this.traders = traders;
+        this.traders = traders || [];
     }
 }
 
 
 class Item {
-    constructor(name, options) {
+    constructor(name, options, onAcquire, onRelinquish) {
         this.name = name;
         this.options = options || [];
+        this.onAcquire = onAcquire || (() => {});
+        this.onRelinquish = onRelinquish || (() => {});
     }
 }
 
@@ -117,12 +132,13 @@ class Scheduler {
  * A Player holds information about what the current player can do.
  */
 class Player extends QualityContainer {
-    constructor(name, location, money) {
-        super(new Set());
+    constructor(name, location, money, hints) {
+        super();
         this.name = name;
         this.itemStacks = new Set();
         this.location = location;
         this.money = money;
+        this.hints = new Set(hints);
     }
 
     /**
@@ -133,23 +149,38 @@ class Player extends QualityContainer {
     getOptions(){
         let location = this.location, options = new Set();
         location.defaultOptions.forEach(o => {
-            if (this.optionIsValid(o))
+            if (o.isValid())
                 options.add(o);
         });
         this.itemStacks.forEach(stack => {
+            if (stack.numberItems == 0) return 0;
             stack.item.options.forEach(option => {
-                if (this.optionIsValid(option))
+                if (option.isValid())
                     options.add(option);
             })
         });
+        let tradersVisible = false;
+        for (let trader of this.location.traders) {
+            if (trader.isVisible()) {
+                tradersVisible = true;
+                break;
+            }
+        }
+        if (tradersVisible) {
+            options.add(
+                new GameOption("Enter Trading", enterTrading)
+            )
+        }
         return options;
     }
 
     /**
      * Add a single item to our inventory.
      * @param i The Item we're adding.
+     * @param muteOnAcquire Should we avoid firing the item's onAcquire callback?
      */
-    addItem(i) {
+    addItem(i, muteOnAcquire) {
+        if (!muteOnAcquire) i.onAcquire(new ItemStack(1, i));
         let stackFound = false;
         for (let stack of this.itemStacks) {
             if (stack.item.name === i.name) {
@@ -166,6 +197,35 @@ class Player extends QualityContainer {
         }
     }
 
+    hasItemWithName(productName, productAmount) {
+        for (let elem of this.itemStacks) {
+            if (elem.item.name === productName) {
+                return elem.numberItems >= productAmount;
+            }
+        }
+        return false;
+    }
+
+    hasItemStack(stack) {
+        return this.hasItemWithName(stack.item.name, stack.numberItems);
+    }
+
+    hasMoney(amount) {
+        return this.money >= amount;
+    }
+
+    removeMoney(amount) {
+        $(".money").fadeOut(500, () => {
+            this.money -= amount;
+            g.inventory.updateAllNoAnimate();
+            $(".money").fadeIn(500);
+        });
+    }
+
+    addMoney(amount) {
+        this.removeMoney(-amount);
+    }
+
     /**
      * Add an ItemStack to our inventory, making sure that at all
      * times there is only one stack for any given item.
@@ -174,8 +234,10 @@ class Player extends QualityContainer {
     addItemStack(stack) {
         let num = stack.numberItems;
         let item = stack.item;
+
+        item.onAcquire(stack);
         for (let i=0; i<num; i++) {
-            this.addItem(item);
+            this.addItem(item, false);
         }
     }
 
@@ -194,7 +256,7 @@ class Player extends QualityContainer {
                 break;
             }
         }
-        if (!found) console.log("error: couldn't find itemstack to remove");
+        if (!found) console.error("error: couldn't find itemstack to remove");
     }
 
     removeItemWithName(itemName) {
@@ -216,20 +278,6 @@ class Player extends QualityContainer {
     moveLocation(location) {
         this.location = location;
         updateDisplay();
-    }
-
-    /**
-     * Is an option valid, given the current state of the game?
-     * @param o The option to check.
-     * @returns {boolean}
-     */
-    optionIsValid(o) {
-        // Todo: option characteristics like location/items required.
-        if (!o || !this) return false;
-        for (let requirement of o.requirements) {
-            if (!requirement(g)) return false;
-        }
-        return true
     }
 }
 
@@ -300,38 +348,26 @@ class InventoryInterface {
         }
     }
 
-    contains(productName, productAmount) {
-        switch(productName) {
-            case "money":
-                return g.player.money >= productAmount;
-            default:
-                for (let elem of g.player.itemStacks) {
-                    if (elem.item.name === productName) {
-                        return elem.numberItems >= productAmount;
-                    }
-                }
-                return false;
-        }
-    }
 
-    removeMoney(amount) {
-        $(".money").fadeOut(500, () => {
-            g.player.money -= amount;
-            this.updateAllNoAnimate();
-            $(".money").fadeIn(500);
-        });
-
-    }
 }
 
 
-class Trader {
-    constructor(name, title, description, willSell, willBuy, willTrade) {
+class Trader extends QualityContainer {
+    constructor(name, title, description, willSell, willBuy, willTrade, ...requirements) {
+        super();
         this.name = name;
         this.title = title;
         this.description = description;
         this.willSell = willSell;
         this.willBuy = willBuy;
         this.willTrade = willTrade;
+        this.requirements = requirements;
+    }
+
+    isVisible() {
+        for (let require of this.requirements) {
+            if (!require(g)) return false;
+        }
+        return true;
     }
 }
