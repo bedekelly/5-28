@@ -523,7 +523,7 @@ const WEST_OF_TRACKS = new Location(
      commuters and the occasional Invigilator around the Tunnels.`,
     `Here, the roof of the cave grows close above your head: close enough to
      touch, albeit for an unusually tall person. There's very little wind here,
-     and the air smells of damp and moss.`
+     and the air smells of damp and moss.`,
     [
         new GameOption("Walk across the tracks", () => {
             "use strict";

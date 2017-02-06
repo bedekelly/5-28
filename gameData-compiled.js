@@ -253,7 +253,7 @@ var THE_STRIP = new Location("The Strip", "The Strip is the gathering-place for 
     g.player.moveLocation(OUTSIDE_APARTMENT);
 })], [], [MR_BAKER, HONEST_PETE]);
 
-var WEST_OF_TRACKS = new Location("West of Tracks", "Behind you, the trains clank and hiss noisily as they ferry workers,\n     commuters and the occasional Invigilator around the Tunnels.", "Here, the roof of the cave grows close above your head: close enough to\n     touch, albeit for an unusually tall person. There's very little wind here,\n     and the air smells of damp and moss."[new GameOption("Walk across the tracks", function () {
+var WEST_OF_TRACKS = new Location("West of Tracks", "Behind you, the trains clank and hiss noisily as they ferry workers,\n     commuters and the occasional Invigilator around the Tunnels.", "Here, the roof of the cave grows close above your head: close enough to\n     touch, albeit for an unusually tall person. There's very little wind here,\n     and the air smells of damp and moss.", [new GameOption("Walk across the tracks", function () {
     "use strict";
 
     g.ledger.write("You stroll across the tracks towards the crowds and the main \n                 bulk of Eastside.");
