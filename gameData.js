@@ -38,9 +38,11 @@ const DEFAULT_ITEMS = [
 const HONEST_PETE = new Trader(
     "Honest Pete",
     "Pete's Perfectly Legal Goods",
-    `Shh, don't speak so loud... don't want to attract any
-    <em>unwanted attention</em> now, do we? Let's see
-    if we can't fix you up with something special - for a bargain price.`,
+    `<html>
+     Shh, don't speak so loud... don't want to attract any
+     <em>unwanted attention</em> now, do we? Let's see if we can't fix you
+     up with something special - for a bargain price, of course!
+     </html>`,
 
     // Buy:
     [
@@ -137,12 +139,20 @@ const MR_BAKER = new Trader(
 const ENGLEBERT = new Trader(
     "Englebert Humperdink",
     "Englebert's Private Supply",
-    `Hmm? Oh, it's you-- speak quietly, they have ears everywhere.`,
+    `We never met, alright? Just take the map and go. I've got no use for it
+     any more.`,
     [
         {
-            product: new Item(`Smuggler's Map`, [], [
-                new Quality("Knows about the smuggler's routes")
-            ], []),
+            product: new Item(`Smuggler's Map`, [], () => {
+                g.ledger.write(
+                    "As you inspect the map, you see a scrawled circle in " +
+                    "graphite around what you'd previously assumed to be " +
+                    "a sheer tunnel wall. You make a point to investigate."
+                );
+                g.player.addQuality(
+                    new Quality("Knows about the smugglers' routes")
+                );
+            }),
             price: 2000,
             quantityLeft: 1,
             multipack: 1
@@ -156,7 +166,7 @@ const ENGLEBERT = new Trader(
     },
     (g) => {
         "use strict";
-        return !g.player.hasQualityWithName("Knows about ")
+        return !g.player.hasQualityWithName("Knows about the smugglers' routes")
     }
 );
 
@@ -180,7 +190,7 @@ const OUTSIDE_APARTMENT = new Location(
             }
         ),
         new GameOption(
-            "Walk north up Eastside",
+            "Walk up Eastside",
             () => {
                 "use strict";
                 g.player.moveLocation(OUTSIDE_FACTORY);
@@ -293,9 +303,11 @@ drainpipe to the street outside. Never hurts to make an appearance, eh?`);
                     itemStack
                 );
                 g.inventory.add(itemStack, true);
-                ledger.add("You find some bits of stale bread at the back of a"
-                    + " kitchen cupboard. Not particularly appetising, but"
-                    + " it'll have to do for now.");
+                ledger.add(
+                    `You find some bits of stale bread at the back of a kitchen
+                     cupboard. Not particularly appetising, but it'll have to 
+                     do for now.`
+                );
                 location.removeQualityWithName("Has stale bread");
             }
         )
@@ -318,7 +330,7 @@ const OUTSIDE_FACTORY = new Location(
 
     [
         new GameOption(
-            "Walk south down Eastside",
+            "Walk down Eastside",
             () => {
                 "use strict";
                 g.player.moveLocation(OUTSIDE_APARTMENT);
@@ -328,25 +340,25 @@ const OUTSIDE_FACTORY = new Location(
             }
         ),
         new GameOption(
-            "Walk north-west towards the station",
+            "Walk across the tracks",
+            () => {
+                "use strict";
+                g.ledger.write(
+                    `Walking across the bridge, a train rattles underneath, 
+                     filled with the unwashed faces of miners and scraping on
+                     the tracks as it slows to enter the station.`
+                );
+                g.player.moveLocation(WEST_OF_TRACKS);
+            }
+        ),
+        new GameOption(
+            "Walk towards the station",
             () => {
                 g.player.moveLocation(EASTSIDE_STATION);
                 g.ledger.add(`You walk briskly west, and a squat, unassuming
                 railway station appears to your right.`)
             }
         ),
-        new GameOption(
-            "Walk west across the tracks",
-            () => {
-                "use strict";
-                g.ledger.write(
-                    "Walking across the bridge, a train rattles underneath," +
-                    " filled with the unwashed faces of miners and scraping on" +
-                    " the tracks as it slows to enter the station."
-                );
-                g.player.moveLocation(WEST_OF_TRACKS);
-            }
-        )
     ], []
 );
 
@@ -382,7 +394,7 @@ const EASTSIDE_STATION = new Location(
             }
         ),
         new GameOption(
-            "Walk east to the Factory", () => {
+            "Walk to the Factory", () => {
                 "use strict";
                 g.ledger.write(`As you walk away from the station, the factory's
                 silhouette looms out of the smog and mist ahead of you.`);
@@ -392,9 +404,16 @@ const EASTSIDE_STATION = new Location(
         new GameOption(
             "Take a train to Northside", () => {
                 "use strict";
-                g.ledger.write(`You hop on the train.`);
-                g.player.moveLocation(NORTHSIDE_STATION);
-                g.player.removeItem("Single Ticket");
+                g.player.removeItemWithName("Single Ticket");
+                g.ledger.write(`A clanking, screeching train pulls into the 
+                station. An mixture of sweat and coal dust hits your lungs as
+                you board, and the train lurches to a start.`);
+                g.scheduler.after(3, "setTrain", () => {
+                    g.ledger.write(`After what seems like hours, stifled in the 
+                    noisy metal compartment, the train jolts to a halt. You
+                    step outside into Northside.`);
+                    g.player.moveLocation(NORTHSIDE_STATION);
+                });
             },
             (g) => {
                 "use strict";
@@ -407,53 +426,88 @@ const EASTSIDE_STATION = new Location(
 
 const NORTHSIDE_STATION = new Location(
     "Northside",
-    `Northside is another place`,
-    `It's pretty rad`,
+    `Northside's station puts Eastside's offering to shame: despite being
+     itself rather shabby, it sports a brand-new ticket office. Clearly the
+     Invigilators have decided to concern themselves with Good Customer
+     Service.`,
+    `Around you, workers push their way through to the trains, coughing loudly
+    and brandishing grubby ticket stubs for the conductors to examine.`,
     [
         new GameOption(
-            "Enter Trading", () => {
+            "Take the train to Eastside", () => {
                 "use strict";
-                enterTrading();
-                g.player.location.removeQualityWithName("Never traded");
-            }, (g) => {
+                g.player.removeItemWithName("Single Ticket");
+                g.ledger.write(
+                    `Pushing through the throngs of workers coming back from a
+                     hard day's labour, you manage to squeeze onto the next
+                     train towards Eastside.`
+                );
+                g.scheduler.after(3, "setTrain", () => {
+                    g.ledger.write(
+                        `It's a comparatively short trip to Eastside, although
+                         the lack of seats in the hot metal carriage makes for
+                         an uncomfortable ride. After some time, you reach the
+                         station at Eastside.`
+                    );
+                    g.player.moveLocation(EASTSIDE_STATION);
+                });
+            },
+            (g) => {
                 "use strict";
-                return g.player.location.hasQualityWithName("Never traded");
+                return g.player.hasItemWithName("Single Ticket", 1);
             }
         ),
-        new GameOption("Back to Eastside", () => {
-            "use strict";
-            g.player.moveLocation(EASTSIDE_STATION);
-            g.player.removeItemWithName("Single Ticket");
-        }, (g) => {
-            "use strict";
-            return g.player.hasItemWithName("Single Ticket", 1);
-        })
+        new GameOption(
+            "Buy a Single Ticket", () => {
+                if (g.player.money < 500) {
+                    g.ledger.write(
+                        `Looks like you don't have the money for a single 
+                         ticket.`
+                    );
+                    return;
+                }
+                g.ledger.write(
+                    `One brief, unmemorable but undeniably
+                     pleasant exchange with the lady at the ticket office and
+                     you have a single ticket stub: valid for any train journey
+                     in the Tunnels.`
+                );
+
+                g.player.money -= 500;
+                g.player.addItemStack(
+                    new ItemStack(1, new Item("Single Ticket"))
+                );
+                updateDisplayNoAnimate();
+            }
+        ),
     ],
     [
-        new Quality("Never traded")
+        // Qualities
     ],
     [
-        HONEST_PETE
+        // Traders
     ]
 );
 
 
 const THE_STRIP = new Location(
     "The Strip",
-    `The Strip is the gathering-place for all activities commercial and strictly
-    above-board in the East Tunnel. The air is warm from body heat, and from a 
-    nearby stove.`,
+    `The Strip is the gathering-place for all activities commercial and
+     strictly above-board in the East Tunnel. The air is warm from body heat,
+     and from a nearby stove.`,
     `Once a wide boulevard intended for automobiles, it's been usurped by a
-    throng of market stalls in various states of disarray. State buildings block
-    the view to the railway - although it's still audible over the noise of the
-    crowd.`,
+     throng of market stalls in various states of disarray. State buildings
+     block the view to the railway - although it's still audible over the noise
+     of the crowd.`,
     [
         new GameOption(
-            "Walk up to Eastside",
+            "Walk up towards Eastside",
             () => {
                 "use strict";
-                g.ledger.write(`You move north, off the strip and into the grimy
-alleyway, half-hidden by a coal-seller's stall.`);
+                g.ledger.write(
+                    `You move north, off the strip and into the grimy alleyway,
+                     half-hidden by a coal-seller's stall.`
+                );
                 g.player.moveLocation(OUTSIDE_APARTMENT);
             }
         )
@@ -465,14 +519,18 @@ alleyway, half-hidden by a coal-seller's stall.`);
 
 const WEST_OF_TRACKS = new Location(
     "West of Tracks",
-    `Here, the tunnel roof draws uncomfortably close overhead. The sheer wall, 
-    stained dark, feels moist to the touch.`,
-    `Ahead, the Invigilators have set up a barrier `,
+    `Behind you, the trains clank and hiss noisily as they ferry workers,
+     commuters and the occasional Invigilator around the Tunnels.`,
+    `Here, the roof of the cave grows close above your head: close enough to
+     touch, albeit for an unusually tall person. There's very little wind here,
+     and the air smells of damp and moss.`
     [
-        new GameOption("Walk across the bridge", () => {
+        new GameOption("Walk across the tracks", () => {
             "use strict";
-            g.ledger.write("You stroll across to the east side of the tracks, " +
-                "hoping beyond hope that you don't cross with any Invigilators.");
+            g.ledger.write(
+                `You stroll across the tracks towards the crowds and the main 
+                 bulk of Eastside.`
+            );
             g.player.moveLocation(OUTSIDE_FACTORY);
         })
     ],
@@ -486,12 +544,13 @@ const WEST_OF_TRACKS = new Location(
 
 
 const DEFAULT_LOCATION = STUDY;
-const DEFAULT_MONEY = 1034;
+const DEFAULT_MONEY = 3134;
 const DEFAULT_HINTS = [
     (g) => {
-        g.ledger.write(`They say that, west of the tracks, a smuggler named Englebert is selling
-    his most prized possession. Look for the man with the smoky glasses and
-    overcoat.`
+        g.ledger.write(
+            `They say that, west of the tracks, a smuggler named Englebert is
+             selling his most prized possession. Look for the man with the
+             smoky glasses and overcoat.`
         );
         g.player.addQuality(new Quality("Knows about Englebert"))
     }

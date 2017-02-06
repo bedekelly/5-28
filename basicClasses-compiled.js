@@ -248,7 +248,7 @@ var Scheduler = function () {
     }, {
         key: "after",
         value: function after(secs, label, fn) {
-            var id = setTimeout(fn, secs);
+            var id = setTimeout(fn, secs * 1000);
             this._scheduleMap.set(label, id);
         }
     }, {
@@ -506,7 +506,12 @@ var Player = function (_QualityContainer2) {
                 }
             }
 
-            if (!found) console.error("error: couldn't find itemstack to remove");
+            if (!found) {
+                console.error("error: couldn't find itemstack:");
+                console.error(stack);
+                console.error("in current stacks:");
+                console.error(this.itemStacks);
+            }
         }
     }, {
         key: "removeItemWithName",

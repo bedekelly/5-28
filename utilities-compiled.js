@@ -283,7 +283,7 @@ function addTrader(traderInfo) {
     var description = $('<p class="trader-description"></p>');
     description.html('"' + traderInfo.description + '"');
     trader.append(description);
-
+    console.log(traderInfo);
     if (traderInfo.willSell.length !== 0) {
         var buySubheading = $('<h5>Buy</h5>');
         trader.append(buySubheading);
@@ -534,7 +534,7 @@ function useHint() {
     "use strict";
 
     var hint = randomPop(g.player.hints);
-    hint(g);
+    if (hint) hint(g);
 }
 
 //# sourceMappingURL=utilities-compiled.js.map

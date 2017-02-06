@@ -111,7 +111,7 @@ class Scheduler {
     };
 
     after(secs, label, fn) {
-        let id = setTimeout(fn, secs);
+        let id = setTimeout(fn, secs*1000);
         this._scheduleMap.set(label, id);
     }
 
@@ -253,7 +253,12 @@ class Player extends QualityContainer {
                 break;
             }
         }
-        if (!found) console.error("error: couldn't find itemstack to remove");
+        if (!found) {
+            console.error(`error: couldn't find itemstack:`);
+            console.error(stack);
+            console.error(`in current stacks:`);
+            console.error(this.itemStacks);
+        }
     }
 
     removeItemWithName(itemName) {
