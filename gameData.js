@@ -282,7 +282,7 @@ drainpipe to the street outside. Never hurts to make an appearance, eh?`);
             "Find something to eat", () => {
                 let ledger = g.ledger;
                 let location = g.player.location;
-                if (!location.hasQualityWithName("Has Stale Bread")) {
+                if (!location.hasQualityWithName("Has stale bread")) {
                     ledger.add(`You scavenge for more food in your meagre
                     kitchen, but you can't come up with anything resembling a 
                     meal.`);
@@ -296,12 +296,12 @@ drainpipe to the street outside. Never hurts to make an appearance, eh?`);
                 ledger.add("You find some bits of stale bread at the back of a"
                     + " kitchen cupboard. Not particularly appetising, but"
                     + " it'll have to do for now.");
-                location.removeQualityWithName("Has Stale Bread");
+                location.removeQualityWithName("Has stale bread");
             }
         )
     ],
     [
-        new Quality("Has Stale Bread")
+        new Quality("Has stale bread")
     ]
 );
 

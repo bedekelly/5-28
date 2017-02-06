@@ -45,17 +45,8 @@ class QualityContainer {
     }
 
     removeQualityWithName(name) {
-        let idx, found = false;
-        for (let i=0; i<this.qualities.length; i++) {
-            let quality = this.qualities[i];
-            if (quality.name == name) {
-                idx = i;
-                found = true;
-                break;
-            }
-        }
-        if (found) {
-            this.qualities.splice(idx, 1);
+        for (let quality of this.qualities) {
+            if (quality.name == name) this.qualities.delete(quality);
         }
     }
 
