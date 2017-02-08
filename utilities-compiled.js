@@ -533,8 +533,10 @@ function randomPop(set) {
 function useHint() {
     "use strict";
 
+    g.player.removeItemWithName("Whispered Hint");
     var hint = randomPop(g.player.hints);
     if (hint) hint(g);
+    g.inventory.updateAllNoAnimate();
 }
 
 //# sourceMappingURL=utilities-compiled.js.map

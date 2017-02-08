@@ -416,6 +416,8 @@ function randomPop(set) {
 
 function useHint() {
     "use strict";
+    g.player.removeItemWithName("Whispered Hint");
     let hint = randomPop(g.player.hints);
     if (hint) hint(g);
+    g.inventory.updateAllNoAnimate();
 }

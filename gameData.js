@@ -62,14 +62,7 @@ const HONEST_PETE = new Trader(
             "product": new Item(
                 "Whispered Hint",
                 [
-                    new GameOption(
-                        "Use Whispered Hint",
-                        () => {
-                            g.player.removeItemWithName("Whispered Hint");
-                            useHint();
-                            updateDisplayNoAnimate();
-                        },
-                    )
+                    new GameOption("Use Whispered Hint", useHint)
                 ]
             ),
             price: 1000,

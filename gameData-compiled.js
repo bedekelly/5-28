@@ -42,11 +42,7 @@ var HONEST_PETE = new Trader("Honest Pete", "Pete's Perfectly Legal Goods", "<ht
     quantityLeft: 1,
     multipack: 1
 }, {
-    "product": new Item("Whispered Hint", [new GameOption("Use Whispered Hint", function () {
-        g.player.removeItemWithName("Whispered Hint");
-        useHint();
-        updateDisplayNoAnimate();
-    })]),
+    "product": new Item("Whispered Hint", [new GameOption("Use Whispered Hint", useHint)]),
     price: 1000,
     quantityLeft: 3,
     multipack: 1
